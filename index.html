@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Голос Россонщины</title>
+    <!-- Подключаем шрифт Inter с полной кириллической поддержкой -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&subset=cyrillic,latin&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #fcfcfb;
+            --card-bg: #ffffff;
+            --text-main: #141412;
+            --text-muted: #6b6a65;
+            --border-color: #e5e5df;
+            --accent-color: #b0c9ff;
+            --accent-bg: #eff6ff;
+            --hover-bg: #f4f4f0;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 680px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: var(--text-main);
+            color: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-info h1 {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .tg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .tg-badge:hover {
+            background: #e2e8f0;
+        }
+
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            border-color: #d1d1cb;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Активная карточка поднимается выше слоя блюра и остается кристально четкой */
+        .post-card.active-card {
+            position: relative;
+            z-index: 1005;
+            border-color: var(--accent-color);
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .post-content {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+
+        .post-content p {
+            margin-bottom: 10px;
+        }
+
+        .post-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .active-reactions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .reaction-pill {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-main);
+        }
+
+        .reaction-pill.user-voted {
+            background: var(--accent-bg);
+            border-color: #bfdbfe;
+            color: var(--accent-color);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(20, 20, 18, 0.35);
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            position: fixed;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 320px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            transform-origin: top right;
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+            z-index: 1010;
+        }
+
+        .modal-overlay.open .modal-container,
+        .modal-container.open {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .close-modal:hover {
+            background: var(--hover-bg);
+            color: var(--text-main);
+        }
+
+        .reactions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reaction-option {
+            background: var(--hover-bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 8px 0;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.15s;
+        }
+
+        .reaction-option span {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .reaction-option:hover {
+            background: #e9e9e3;
+            transform: scale(1.05);
+        }
+
+        .reaction-option.selected {
+            background: var(--accent-bg);
+            border-color: #93c5fd;
+        }
+
+        .reaction-option.selected span {
+            color: var(--accent-color);
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .action-btn:hover {
+            background: #ededea;
+        }
+
+        .action-btn.primary {
+            background: var(--text-main);
+            color: #fff;
+            border-color: var(--text-main);
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .action-btn.primary:hover {
+            opacity: 0.9;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #111110;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 10px;
+            }
+            .post-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <div class="brand">
+                <div class="brand-logo">ГР</div>
+                <div class="brand-info">
+                    <h1>Голос Россонщины</h1>
+                    <p>Актуальные новости и события края</p>
+                </div>
+            </div>
+            <a href="https://t.me/rossony_online" target="_blank" class="tg-badge">
+                <span>Telegram-канал</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </a>
+        </header>
+
+        <main class="feed">
+            <!-- Пост 1 -->
+            <article class="post-card" id="post-1" onclick="openModal(event, 1)">
+                <div class="post-header">
+                    <span class="post-time">Сегодня, 15:40</span>
+                </div>
+                <div class="post-content">
+                    <p>В Россонах завершилась подготовка к весеннему благоустройству парковой зоны. Местные жители активно поддержали инициативу.</p>
+                    <p>Нажмите на карточку, чтобы поставить реакцию или перейти к обсуждению в Telegram.</p>
+                </div>
+                <div class="active-reactions" id="reactions-1"></div>
+            </article>
+
+            <!-- Пост 2 -->
+            <article class="post-card" id="post-2" onclick="openModal(event, 2)">
+                <div class="post-header">
+                    <span class="post-time">Вчера, 18:10</span>
+                </div>
+                <div class="post-content">
+                    <p>Обновление расписания районного транспорта начнет действовать со следующей недели. Ознакомиться с изменениями можно на официальных ресурсах.</p>
+                </div>
+                <div class="active-reactions" id="reactions-2"></div>
+            </article>
+        </main>
+
+        <footer>
+            <p>Голос Россонщины © 2026. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <!-- Разделяем оверлей и меню на отдельные элементы с разным z-index -->
+    <div class="modal-overlay" id="postModal" onclick="closeModal()"></div>
+    <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
+        <div class="modal-title">
+            <span>Реакции и действия</span>
+            <button class="close-modal" onclick="closeModal()">×</button>
+        </div>
+
+        <div class="reactions-grid" id="reactionsGrid">
+            <button class="reaction-option" onclick="selectReaction('😂')">😂 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('😍')">😍 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('🥰')">🥰 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('😢')">😢 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('😡')">😡 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('❤')">❤ <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('👍')">👍 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('👎')">👎 <span>0</span></button>
+            <button class="reaction-option" onclick="selectReaction('🔥')">🔥 <span>0</span></button>
+        </div>
+
+        <div class="modal-actions">
+            <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">
+                💬 Прокомментировать в Telegram
+            </a>
+            <button class="action-btn" onclick="copyPostLink()">
+                🔗 Копировать ссылку на пост
+            </button>
+            <button class="action-btn" onclick="sharePost()">
+                📤 Поделиться
+            </button>
+        </div>
+    </div>
+
+    <div class="toast" id="toastMessage">Ссылка скопирована в буфер обмена</div>
+
+    <script>
+        let currentPostId = null;
+
+        // Данные реакций для постов (изначально чистые нули)
+        const postsData = {
+            1: { reactions: { '😂':0, '😍':0, '🥰':0, '😢':0, '😡':0, '❤':0, '👍':0, '👎':0, '🔥':0 }, userChoice: null },
+            2: { reactions: { '😂':0, '😍':0, '🥰':0, '😢':0, '😡':0, '❤':0, '👍':0, '👎':0, '🔥':0 }, userChoice: null }
+        };
+
+        function openModal(event, postId) {
+            event.stopPropagation();
+
+            const modalOverlay = document.getElementById('postModal');
+            const modalContainer = document.getElementById('modalContainer');
+
+            // Если менюшка уже открыта — любой клик снаружи закрывает её без перетаскивания
+            if (modalOverlay.classList.contains('open')) {
+                closeModal();
+                return;
+            }
+
+            currentPostId = postId;
+
+            // Снимаем класс активности со всех и ставим на текущий пост
+            document.querySelectorAll('.post-card').forEach(c => c.classList.remove('active-card'));
+            const card = document.getElementById(`post-${postId}`);
+            card.classList.add('active-card');
+
+            // Получаем координаты клика для позиционирования меню
+            const clickX = event.clientX;
+            const clickY = event.clientY;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Позиционируем меню относительно точки клика, учитывая границы экрана
+            let posX = windowWidth - clickX;
+            let posY = clickY;
+
+            if (posX < 20) posX = 20;
+            if (posY < 20) posY = 20;
+            if (posY + 350 > windowHeight) posY = windowHeight - 370;
+
+            modalContainer.style.top = `${posY}px`;
+            modalContainer.style.right = `${posX}px`;
+
+            modalOverlay.classList.add('open');
+            modalContainer.classList.add('open');
+            updateModalUI();
+        }
+
+        function closeModal() {
+            document.getElementById('postModal').classList.remove('open');
+            document.getElementById('modalContainer').classList.remove('open');
+            document.querySelectorAll('.post-card').forEach(c => c.classList.remove('active-card'));
+            currentPostId = null;
+        }
+
+        function selectReaction(emoji) {
+            if (!currentPostId) return;
+            const data = postsData[currentPostId];
+
+            if (data.userChoice === emoji) {
+                data.reactions[emoji]--;
+                data.userChoice = null;
+            } else {
+                if (data.userChoice) {
+                    data.reactions[data.userChoice]--;
+                }
+                data.reactions[emoji]++;
+                data.userChoice = emoji;
+            }
+
+            updateModalUI();
+            renderPostReactions(currentPostId);
+        }
+
+        function updateModalUI() {
+            if (!currentPostId) return;
+            const data = postsData[currentPostId];
+            const grid = document.getElementById('reactionsGrid');
+            const buttons = grid.children;
+            const emojis = ['❤', '👍', '👎', '🔥', '😂', '😍', '🥰', '😢', '😡'];
+
+            for (let i = 0; i < emojis.length; i++) {
+                const em = emojis[i];
+                const btn = buttons[i];
+                const countSpan = btn.querySelector('span');
+                
+                countSpan.textContent = data.reactions[em];
+                
+                if (data.userChoice === em) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            }
+        }
+
+        function renderPostReactions(postId) {
+            const container = document.getElementById(`reactions-${postId}`);
+            const data = postsData[postId];
+            container.innerHTML = '';
+
+            for (const [emoji, count] of Object.entries(data.reactions)) {
+                if (count > 0) {
+                    const pill = document.createElement('div');
+                    pill.className = 'reaction-pill' + (data.userChoice === emoji ? ' user-voted' : '');
+                    pill.innerHTML = `<span>${emoji}</span> <span>${count}</span>`;
+                    container.appendChild(pill);
+                }
+            }
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toastMessage');
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function copyPostLink() {
+            const dummyUrl = window.location.href.split('#')[0] + '#post-' + currentPostId;
+            const textarea = document.createElement('textarea');
+            textarea.value = dummyUrl;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Ссылка скопирована в буфер обмена!');
+            } catch (err) {
+                showToast('Не удалось скопировать ссылку');
+            }
+            document.body.removeChild(textarea);
+            closeModal();
+        }
+
+        function sharePost() {
+            const shareData = {
+                title: 'Голос Россонщины',
+                text: 'Посмотрите эту публикацию в газете «Голос Россонщины»',
+                url: window.location.href.split('#')[0] + '#post-' + currentPostId
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                copyPostLink();
+            }
+            closeModal();
+        }
+    </script>
+</body>
+</html>

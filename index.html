@@ -445,7 +445,8 @@
         // gitguardian:ignore-next-line
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtic3N6bWZobmtrenF6dm9xcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NTUyNzUsImV4cCI6MjEwMDIzMTI3NX0.zkKBX_tqyjnUUiIecGXzHi_sgPxvYWwBrN-jyrM7haw";
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Переименовали в supabaseClient для избежания конфликтов
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentPostId = null;
         let postsData = [];
@@ -467,7 +468,7 @@
         }
 
         async function loadNewsFeed() {
-            const { data: posts, error } = await supabase
+            const { data: posts, error } = await supabaseClient
                 .from('posts')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -627,7 +628,7 @@
 
             if (currentPostId === postId) buildModalReactionsGrid();
 
-            await supabase.from('posts').update({ reactions: post.reactions }).eq('id', postId);
+            await supabaseClient.from('posts').update({ reactions: post.reactions }).eq('id', postId);
         }
 
         function moveCarousel(postId, direction) {

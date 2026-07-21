@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Голос Россонщины // Официальный портал</title>
+    <title>Голос Россонщины</title>
     
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <!-- Подключение шрифта Inter с полной кириллической поддержкой -->
+    <!-- Подключение шрифта Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&subset=cyrillic,latin&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&subset=cyrillic,latin&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #fcfcfb;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #141412;
-            --text-muted: #6b6a65;
-            --border-color: #e5e5df;
-            --accent-color: #0284c7;
-            --accent-bg: #f0f9ff;
-            --hover-bg: #f4f4f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-subtle: #94a3b8;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --accent-soft: #eff6ff;
             --admin-gold: #d97706;
-            --admin-bg: #fffbeeb3;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.08);
-            --shadow-lg: 0 20px 30px -10px rgba(0,0,0,0.15);
+            --admin-bg: #fffbeb;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
         }
 
         * {
@@ -44,105 +42,93 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
-            padding: clamp(12px, 4vw, 32px) clamp(10px, 3vw, 20px);
+            line-height: 1.5;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
+            padding: 20px 14px;
             -webkit-font-smoothing: antialiased;
         }
 
         .wrapper {
             width: 100%;
             max-width: 680px;
+            margin: 0 auto;
         }
 
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: clamp(18px, 4vw, 28px);
-            padding-bottom: clamp(12px, 3vw, 18px);
-            border-bottom: 2px solid var(--border-color);
-            gap: 12px;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
             color: inherit;
         }
 
-        /* Использование logo.jpg в качестве логотипа компании */
+        /* Логотип строго картинка logo.jpg */
         .brand-logo-img {
-            height: clamp(44px, 10vw, 54px);
-            width: auto;
-            max-width: 160px;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* Запасной значок, если logo.jpg недоступен */
-        .brand-logo-fallback {
-            width: 44px;
-            height: 44px;
-            background: var(--text-main);
-            color: #ffffff;
-            border-radius: 12px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            display: block;
         }
 
         .brand-info h1 {
-            font-size: clamp(16px, 4vw, 19px);
-            font-weight: 800;
-            letter-spacing: -0.3px;
+            font-size: 19px;
+            font-weight: 700;
             color: var(--text-main);
             line-height: 1.2;
+            letter-spacing: -0.2px;
         }
 
         .brand-info p {
-            font-size: clamp(11px, 2.8vw, 13px);
+            font-size: 12px;
             color: var(--text-muted);
-            font-weight: 500;
+            font-weight: 400;
+            margin-top: 2px;
         }
 
         .tg-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #0088cc;
-            color: #ffffff;
+            background: var(--accent-soft);
+            color: var(--accent-color);
+            border: 1px solid #bfdbfe;
             padding: 8px 14px;
-            border-radius: 30px;
+            border-radius: var(--radius-md);
             font-size: 13px;
             font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.25);
-            transition: transform 0.2s ease, background 0.2s ease;
+            transition: opacity 0.2s ease;
         }
 
-        .tg-badge:hover {
-            background: #0077b5;
-            transform: translateY(-1px);
+        .tg-badge:active {
+            opacity: 0.8;
         }
 
         .admin-banner {
             display: none;
             background: var(--admin-bg);
-            border: 1px dashed var(--admin-gold);
+            border: 1px solid #fef08a;
             border-radius: var(--radius-md);
             padding: 12px 16px;
             margin-bottom: 20px;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
 
         .admin-banner.visible {
@@ -151,7 +137,7 @@
 
         .admin-info-text {
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             color: #92400e;
         }
 
@@ -159,52 +145,30 @@
             background: var(--admin-gold);
             color: #ffffff;
             border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-create-post:hover {
-            opacity: 0.9;
         }
 
         .feed {
             display: flex;
             flex-direction: column;
-            gap: clamp(16px, 4vw, 24px);
+            gap: 20px;
         }
 
         .post-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: clamp(16px, 3.5vw, 24px);
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
+            padding: 22px;
             position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            touch-action: pan-y;
-        }
-
-        .post-card:hover {
-            border-color: #d1d1cb;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-        }
-
-        .post-card.holding-active {
-            transform: scale(0.98);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+            cursor: pointer;
         }
 
         .post-card.active-card {
-            z-index: 1005;
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px var(--accent-color), var(--shadow-lg);
         }
 
         .carousel-container {
@@ -212,37 +176,35 @@
             width: 100%;
             border-radius: var(--radius-md);
             overflow: hidden;
-            margin-bottom: 14px;
-            background: #0f172a;
+            margin-bottom: 16px;
+            background: #f1f5f9;
         }
 
         .carousel-track {
             display: flex;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.35s ease;
             width: 100%;
         }
 
         .carousel-slide {
             min-width: 100%;
-            position: relative;
         }
 
         .carousel-slide img {
             width: 100%;
-            height: clamp(220px, 50vw, 360px);
+            height: clamp(220px, 45vw, 380px);
             object-fit: cover;
             display: block;
         }
 
         .carousel-dots {
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             gap: 6px;
-            z-index: 5;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(255, 255, 255, 0.85);
             padding: 4px 8px;
             border-radius: 12px;
             backdrop-filter: blur(4px);
@@ -252,53 +214,54 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
+            background: #cbd5e1;
             transition: all 0.2s ease;
         }
 
         .carousel-dot.active {
-            background: #ffffff;
+            background: var(--accent-color);
             width: 14px;
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .carousel-nav-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.85);
-            border: none;
+            width: 34px;
+            height: 34px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 6;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            font-size: 16px;
-            color: #0f172a;
-        }
-
-        .carousel-nav-btn.prev { left: 8px; }
-        .carousel-nav-btn.next { right: 8px; }
-
-        .post-time {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-
-        .post-title {
-            font-size: clamp(16px, 4vw, 19px);
-            font-weight: 800;
-            line-height: 1.35;
-            margin-bottom: 8px;
+            z-index: 5;
+            font-size: 18px;
             color: var(--text-main);
         }
 
+        .carousel-nav-btn.prev { left: 10px; }
+        .carousel-nav-btn.next { right: 10px; }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-subtle);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            letter-spacing: -0.2px;
+        }
+
+        /* Разрешенная плавная анимация раскрытия поста */
         .post-text-wrapper {
             display: grid;
             grid-template-rows: 0fr;
@@ -318,9 +281,9 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            font-size: clamp(14px, 3.5vw, 15px);
+            font-size: 15px;
             color: #334155;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
         .post-card.expanded .post-preview-text {
@@ -328,7 +291,7 @@
         }
 
         .post-full-text {
-            font-size: clamp(14px, 3.5vw, 15px);
+            font-size: 15px;
             color: #334155;
             line-height: 1.6;
             padding-top: 2px;
@@ -336,10 +299,11 @@
 
         .expand-hint {
             display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--accent-color);
-            margin-top: 6px;
+            margin-top: 10px;
+            cursor: pointer;
         }
 
         .post-card.expanded .expand-hint {
@@ -349,44 +313,54 @@
         .active-reactions {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 6px;
-            margin-top: 12px;
-            padding-top: 10px;
-            border-top: 1px solid #f1f5f9;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
         }
 
-        .reaction-pill {
-            background: var(--hover-bg);
+        .reaction-btn-pill {
+            background: #f1f5f9;
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 3px 9px;
-            font-size: 12px;
+            border-radius: 16px;
+            padding: 5px 12px;
+            font-size: 13px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             color: var(--text-main);
+            cursor: pointer;
+            outline: none;
         }
 
-        .reaction-pill.user-voted {
-            background: var(--accent-bg);
+        .reaction-btn-pill.user-voted {
+            background: var(--accent-soft);
             border-color: #93c5fd;
             color: var(--accent-color);
+        }
+
+        .apple-emoji {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            display: inline-block;
+            object-fit: contain;
+            pointer-events: none;
         }
 
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.25);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease;
-            z-index: 1000;
+            z-index: 10000;
         }
 
         .modal-overlay.open {
@@ -399,98 +373,80 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            width: min(320px, calc(100vw - 24px));
+            width: min(300px, calc(100vw - 32px));
             padding: 16px;
-            box-shadow: var(--shadow-lg);
-            transform-origin: top left;
-            transform: scale(0.2);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.12);
             opacity: 0;
             pointer-events: none;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2), opacity 0.2s ease;
-            z-index: 1010;
+            transform: scale(0.92);
+            transform-origin: top left;
+            transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10001;
         }
 
         .modal-overlay.open .modal-container,
         .modal-container.open {
-            transform: scale(1);
             opacity: 1;
+            transform: scale(1);
             pointer-events: auto;
         }
 
         .modal-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-muted);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .close-modal {
-            background: var(--hover-bg);
+            background: none;
             border: none;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            font-size: 16px;
+            font-size: 20px;
             cursor: pointer;
-            color: var(--text-muted);
+            color: var(--text-subtle);
+            line-height: 1;
+        }
+
+        /* В контекстном меню ТОЛЬКО иконки смайлов без цифр */
+        .reactions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reaction-option {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 0;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .reactions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .reaction-option {
-            background: var(--hover-bg);
-            border: 1px solid transparent;
-            border-radius: var(--radius-md);
-            padding: 6px 0;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            transition: transform 0.15s ease, background 0.15s ease;
-        }
-
-        .reaction-option:hover {
-            transform: scale(1.08);
-            background: #e9e9e3;
-        }
-
-        .reaction-option span {
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
         .reaction-option.selected {
-            background: var(--accent-bg);
+            background: var(--accent-soft);
             border-color: #60a5fa;
         }
 
         .modal-actions {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .action-btn {
-            background: var(--hover-bg);
+            background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 9px 12px;
+            padding: 10px 12px;
             font-family: inherit;
             font-size: 13px;
             font-weight: 600;
@@ -498,7 +454,8 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             text-decoration: none;
         }
 
@@ -506,50 +463,49 @@
             background: var(--text-main);
             color: #ffffff;
             border-color: var(--text-main);
-            justify-content: center;
         }
 
         .admin-modal {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
+            transform: translate(-50%, -50%);
             width: min(480px, calc(100vw - 32px));
             background: #ffffff;
             border-radius: var(--radius-lg);
-            padding: 20px;
-            box-shadow: var(--shadow-lg);
-            z-index: 1050;
+            padding: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            z-index: 10005;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.25s ease;
+            transition: opacity 0.2s ease;
             border: 1px solid var(--border-color);
         }
 
         .admin-modal.open {
             opacity: 1;
             pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
             font-size: 11px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .form-control {
             width: 100%;
-            padding: 9px 11px;
+            padding: 10px 12px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             font-family: inherit;
             font-size: 14px;
             outline: none;
@@ -557,37 +513,47 @@
 
         textarea.form-control {
             resize: vertical;
-            min-height: 80px;
+            min-height: 90px;
         }
 
         .toast {
             position: fixed;
             bottom: 24px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%);
             background: #0f172a;
             color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 10px 22px;
+            border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2000;
+            font-weight: 500;
+            opacity: 0;
             pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 20000;
         }
 
         .toast.show {
-            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
         footer {
             text-align: center;
             margin-top: 36px;
-            padding-top: 18px;
+            padding-top: 20px;
             border-top: 1px solid var(--border-color);
-            font-size: 13px;
+            font-size: 12px;
+            color: var(--text-subtle);
+        }
+
+        .empty-feed-notice {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-lg);
             color: var(--text-muted);
+            font-size: 14px;
         }
     </style>
 </head>
@@ -596,78 +562,74 @@
     <div class="wrapper">
         <header>
             <a href="#" class="brand">
-                <!-- Логотип компании из файла logo.jpg с фоллбэком -->
-                <img src="logo.jpg" alt="Голос Россонщины" class="brand-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="brand-logo-fallback">ГР</div>
+                <!-- Картинка логотипа logo.jpg -->
+                <img src="logo.jpg" alt="Голос Россонщины" class="brand-logo-img" onerror="this.onerror=null; this.src='https://placehold.co/80x80/2563eb/ffffff?text=ГР';">
                 <div class="brand-info">
                     <h1>Голос Россонщины</h1>
-                    <p>Актуальные новости и события района</p>
+                    <p>Информационный портал района</p>
                 </div>
             </a>
 
             <div class="header-actions">
                 <a href="https://t.me/rossony_online" target="_blank" class="tg-badge">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
                     <span>Канал</span>
                 </a>
             </div>
         </header>
 
-        <!-- Панель Администратора -->
-        <div class="admin-banner" id="adminBanner">
-            <div class="admin-info-text">
-                👑 Панель редактора (ID: 5116019950)
+        <!-- Только чистая центральная лента новостей (без правых панелей) -->
+        <div class="main-content">
+            <!-- Панель Администратора -->
+            <div class="admin-banner" id="adminBanner">
+                <div class="admin-info-text" id="adminBannerText">
+                    Режим редактора (ID: 5116019950)
+                </div>
+                <button class="btn-create-post" onclick="openAdminModal()">
+                    + Создать новость
+                </button>
             </div>
-            <button class="btn-create-post" onclick="openAdminModal()">
-                ➕ Опубликовать новость
-            </button>
+
+            <!-- Основная лента новостей -->
+            <main class="feed" id="newsFeed">
+                <!-- Загружается из папки /news/ -->
+            </main>
         </div>
 
-        <main class="feed" id="newsFeed">
-            <!-- Новости подгружаются динамически из JSON файлов папки news/ -->
-        </main>
-
         <footer>
-            <p>Голос Россонщины © 2026. Все права защищены.</p>
+            <p>Голос Россонщины © 2026</p>
         </footer>
     </div>
 
-    <!-- Контекстное меню реакций -->
-    <div class="modal-overlay" id="postModal" onclick="closeModal()"></div>
-    <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
-        <div class="modal-title">
-            <span>Реакции и действия</span>
-            <button class="close-modal" onclick="closeModal()">×</button>
-        </div>
+    <!-- Контекстное меню (вылезает из левого верхнего угла) -->
+    <div class="modal-overlay" id="postModal" onclick="closeModal()">
+        <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
+            <div class="modal-title">
+                <span>Выберите реакцию</span>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
 
-        <div class="reactions-grid" id="reactionsGrid">
-            <button class="reaction-option" onclick="selectReaction('🔥')">🔥 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('👍')">👍 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('❤️')">❤️ <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('😂')">😂 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('😍')">😍 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('😢')">😢 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('😡')">😡 <span>0</span></button>
-            <button class="reaction-option" onclick="selectReaction('👎')">👎 <span>0</span></button>
-        </div>
+            <!-- Реакции БЕЗ счётчиков -->
+            <div class="reactions-grid" id="reactionsGrid">
+            </div>
 
-        <div class="modal-actions">
-            <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">
-                💬 Читать в Telegram
-            </a>
-            <button class="action-btn" onclick="copyPostLink()">
-                🔗 Копировать ссылку
-            </button>
-            <button class="action-btn" onclick="sharePost()">
-                📤 Поделиться
-            </button>
+            <div class="modal-actions">
+                <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">
+                    Читать в Telegram
+                </a>
+                <button class="action-btn" onclick="copyPostLink()">
+                    Копировать ссылку
+                </button>
+                <button class="action-btn" onclick="sharePost()">
+                    Поделиться
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Модальное окно публикации новости для админа -->
+    <!-- Модальное окно создания новости для админа -->
     <div class="admin-modal" id="adminModal">
         <div class="modal-title">
-            <span>Публикация новости</span>
+            <span>Новая публикация</span>
             <button class="close-modal" onclick="closeAdminModal()">×</button>
         </div>
         <div class="form-group">
@@ -676,15 +638,15 @@
         </div>
         <div class="form-group">
             <label>Текст новости</label>
-            <textarea id="newPostContent" class="form-control" placeholder="Введите подробный текст..."></textarea>
+            <textarea id="newPostContent" class="form-control" placeholder="Введите полный текст новости..."></textarea>
         </div>
         <div class="form-group">
-            <label>Ссылки на изображения / logo.jpg (с новой строки)</label>
-            <textarea id="newPostMedia" class="form-control" placeholder="logo.jpg&#10;https://example.com/photo2.jpg" style="min-height: 60px;"></textarea>
+            <label>Ссылки на фото / logo.jpg (по одной в строке)</label>
+            <textarea id="newPostMedia" class="form-control" placeholder="logo.jpg" style="min-height: 50px;"></textarea>
         </div>
         <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
-            <button class="action-btn primary" onclick="publishPostFromModal()">🚀 Опубликовать на сайте</button>
-            <button class="action-btn" style="justify-content:center;" onclick="downloadNewsJSON()">📥 Скачать JSON для папки news/</button>
+            <button class="action-btn primary" onclick="publishPostFromModal()">Опубликовать на сайте</button>
+            <button class="action-btn" onclick="downloadNewsJSON()">Скачать JSON файл (в /news)</button>
         </div>
     </div>
 
@@ -694,15 +656,38 @@
         const ADMIN_ID = 5116019950;
         let currentPostId = null;
 
-        // Дефолтные новости
-        const defaultPosts = [
+        /* Таблица оригинальных Apple iOS смайликов */
+        const appleEmojiMap = {
+            '🔥': '1f525',
+            '👍': '1f44d',
+            '❤️': '2764-fe0f',
+            '😂': '1f602',
+            '😍': '1f60d',
+            '😢': '1f622',
+            '😡': '1f621',
+            '👎': '1f44e',
+            'ℹ️': '2139-fe0f',
+            '✉️': '2709-fe0f'
+        };
+
+        function getAppleEmojiHtml(emojiChar, size = 20) {
+            const code = appleEmojiMap[emojiChar];
+            if (code) {
+                const src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.0.1/img/apple/64/${code}.png`;
+                return `<img src="${src}" class="apple-emoji" style="width:${size}px; height:${size}px;" alt="${emojiChar}" loading="lazy">`;
+            }
+            return emojiChar;
+        }
+
+        // Чистые демо-новости со СТРОГО НУЛЕВЫМИ реакциями
+        const fallbackPosts = [
             {
                 id: 1,
                 time: 'Сегодня, 15:40',
                 title: 'В Россонах начинается весеннее обновление центрального парка',
-                content: 'В Россонах завершилась подготовка к масштабному весеннему благоустройству парковой зоны. Местные жители и коммунальные службы активно поддержали инициативу субботника. Планируется высадить более трехсот деревьев, обновить скамейки, уложить новое тротуарное покрытие и оборудовать современную детскую площадку с качелями.',
+                content: 'В Россонах завершилась подготовка к масштабному весеннему благоустройству парковой зоны. Местные жители и коммунальные службы активно поддержали инициативу субботника. Планируется высадить более трехсот деревьев, обновить скамейки, уложить новое тротуарное покрытие и оборудовать современную детскую площадку.',
                 media: ['logo.jpg'],
-                reactions: { '🔥': 18, '👍': 32, '❤️': 24, '😂': 0, '😍': 8, '😢': 0, '😡': 0, '👎': 0 },
+                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
                 userChoice: null
             },
             {
@@ -711,61 +696,47 @@
                 title: 'Обновленное расписание районных автобусных маршрутов',
                 content: 'Обновление расписания районного транспорта начнет действовать со следующей недели. Изменения коснутся утренних и вечерних рейсов для удобства жителей пригорода и школьников. Ознакомиться с подробным графиком по всем маршрутам можно на нашем портале.',
                 media: ['logo.jpg'],
-                reactions: { '🔥': 5, '👍': 14, '❤️': 6, '😂': 1, '😍': 0, '😢': 2, '😡': 0, '👎': 0 },
+                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
                 userChoice: null
             }
         ];
 
         let postsData = [];
 
-        async function loadNewsFromFolder() {
+        async function loadNewsFeed() {
             let loadedPosts = [];
-            
-            // Загружаем сохраненный локальный стек
-            try {
-                const local = localStorage.getItem('rossony_news_feed_v3');
-                if (local) {
-                    loadedPosts = JSON.parse(local);
-                }
-            } catch(e) {}
 
-            // Пытаемся автоматически фетчить индивидуальные файлы из папки news/
+            // 1. Попытка загрузки из папки /news/ (manifest.json или отдельных постов)
             try {
-                // Пытаемся прочесть индексный список news/index.json, если есть
-                const indexRes = await fetch('news/index.json').catch(() => null);
-                if (indexRes && indexRes.ok) {
-                    const filenames = await indexRes.json();
-                    if (Array.isArray(filenames)) {
-                        for (const file of filenames) {
-                            const res = await fetch(`news/${file}`).catch(() => null);
-                            if (res && res.ok) {
-                                const jsonPost = await res.json();
-                                if (!loadedPosts.some(p => p.id === jsonPost.id)) {
-                                    loadedPosts.push(jsonPost);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // Пробуем прямой запрос первых новостных JSON-файлов в папке news/
-                    for (let id = 1; id <= 10; id++) {
-                        const res = await fetch(`news/post_${id}.json`).catch(() => null);
-                        if (res && res.ok) {
-                            const jsonPost = await res.json();
-                            if (!loadedPosts.some(p => p.id === jsonPost.id)) {
-                                loadedPosts.push(jsonPost);
-                            }
-                        }
-                    }
+                const manifestResp = await fetch('news/manifest.json');
+                if (manifestResp.ok) {
+                    const manifest = await manifestResp.json(); // Ожидаем массив имен файлов: ["post_1.json", "post_2.json"]
+                    const fetchPromises = manifest.map(filename => 
+                        fetch(`news/${filename}`)
+                            .then(res => res.ok ? res.json() : null)
+                            .catch(() => null)
+                    );
+                    const fetchedNews = await Promise.all(fetchPromises);
+                    loadedPosts = fetchedNews.filter(post => post !== null);
                 }
-            } catch(err) {
-                console.log("Индивидуальные JSON-файлы загружаются из локального хранилища.");
+            } catch (e) {
+                console.log("Локальный манифест /news/manifest.json не найден, загрузка из локального хранилища...");
             }
 
+            // 2. Если в папке /news ничего нет или ошибка — загружаем из localStorage
             if (loadedPosts.length === 0) {
-                postsData = defaultPosts;
+                try {
+                    const local = localStorage.getItem('rossony_news_feed_v6');
+                    if (local) {
+                        loadedPosts = JSON.parse(local);
+                    }
+                } catch(e) {}
+            }
+
+            // 3. Если и там пусто — берем базовые чистые новости
+            if (loadedPosts.length === 0) {
+                postsData = fallbackPosts;
             } else {
-                // Сортируем по убыванию ID
                 postsData = loadedPosts.sort((a, b) => b.id - a.id);
             }
 
@@ -784,23 +755,28 @@
                     document.getElementById('adminBanner').classList.add('visible');
                 }
             }
-            loadNewsFromFolder();
+            loadNewsFeed();
         });
 
         function savePosts() {
-            localStorage.setItem('rossony_news_feed_v3', JSON.stringify(postsData));
+            localStorage.setItem('rossony_news_feed_v6', JSON.stringify(postsData));
         }
 
         function renderFeed() {
             const container = document.getElementById('newsFeed');
             container.innerHTML = '';
 
+            if (postsData.length === 0) {
+                container.innerHTML = `<div class="empty-feed-notice">Пока нет опубликованных новостей.</div>`;
+                return;
+            }
+
             postsData.forEach(post => {
                 const article = document.createElement('article');
                 article.className = 'post-card';
                 article.id = `post-${post.id}`;
 
-                // Карусель медиафайлов
+                // Карусель медиа
                 let mediaHtml = '';
                 const images = Array.isArray(post.media) ? post.media : (post.media ? [post.media] : []);
                 
@@ -837,17 +813,6 @@
                     `;
                 }
 
-                // Реакции
-                let reactionsHtml = '';
-                if (post.reactions) {
-                    for (const [emoji, count] of Object.entries(post.reactions)) {
-                        if (count > 0) {
-                            const votedClass = post.userChoice === emoji ? ' user-voted' : '';
-                            reactionsHtml += `<div class="reaction-pill${votedClass}"><span>${emoji}</span> <span>${count}</span></div>`;
-                        }
-                    }
-                }
-
                 article.innerHTML = `
                     ${mediaHtml}
                     <div class="post-time">${post.time}</div>
@@ -858,15 +823,71 @@
                             <div class="post-full-text">${post.content}</div>
                         </div>
                     </div>
-                    <span class="expand-hint">Читать полностью...</span>
+                    <span class="expand-hint" onclick="event.stopPropagation(); toggleExpandPost(${post.id})">Читать полностью...</span>
                     <div class="active-reactions" id="reactions-${post.id}">
-                        ${reactionsHtml}
+                        ${getReactionsBarHtml(post)}
                     </div>
                 `;
 
                 attachTouchAndHoldEvents(article, post.id);
                 container.appendChild(article);
             });
+        }
+
+        function getReactionsBarHtml(post) {
+            let html = '';
+            if (post.reactions) {
+                for (const [emoji, count] of Object.entries(post.reactions)) {
+                    // Показывать ТОЛЬКО если есть хотя бы 1 голос пользователей
+                    if (count > 0) {
+                        const votedClass = post.userChoice === emoji ? ' user-voted' : '';
+                        html += `
+                            <button class="reaction-btn-pill${votedClass}" onclick="event.stopPropagation(); toggleReaction(${post.id}, '${emoji}')">
+                                ${getAppleEmojiHtml(emoji, 18)}
+                                <span>${count}</span>
+                            </button>
+                        `;
+                    }
+                }
+            }
+            return html;
+        }
+
+        function updatePostReactionsUI(postId) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+
+            const reactionsContainer = document.getElementById(`reactions-${postId}`);
+            if (reactionsContainer) {
+                reactionsContainer.innerHTML = getReactionsBarHtml(post);
+            }
+        }
+
+        function toggleReaction(postId, emoji) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+
+            if (!post.reactions) {
+                post.reactions = { '🔥':0, '👍':0, '❤️':0, '😂':0, '😍':0, '😢':0, '😡':0, '👎':0 };
+            }
+
+            if (post.userChoice === emoji) {
+                post.reactions[emoji] = Math.max(0, post.reactions[emoji] - 1);
+                post.userChoice = null;
+            } else {
+                if (post.userChoice) {
+                    post.reactions[post.userChoice] = Math.max(0, post.reactions[post.userChoice] - 1);
+                }
+                post.reactions[emoji] = (post.reactions[emoji] || 0) + 1;
+                post.userChoice = emoji;
+            }
+
+            savePosts();
+            updatePostReactionsUI(postId);
+
+            if (currentPostId === postId) {
+                buildModalReactionsGrid();
+            }
         }
 
         function moveCarousel(postId, direction) {
@@ -894,62 +915,36 @@
 
         let holdTimer = null;
         let isHoldTriggered = false;
-        let startX = 0, startY = 0;
 
         function attachTouchAndHoldEvents(element, postId) {
             const startHold = (e) => {
-                if (e.target.closest('.carousel-nav-btn')) return;
+                if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.expand-hint')) return;
 
-                const touch = e.touches ? e.touches[0] : e;
-                startX = touch.clientX;
-                startY = touch.clientY;
                 isHoldTriggered = false;
-
-                element.classList.add('holding-active');
-
-                // Удержание ровно 1 секунду
                 holdTimer = setTimeout(() => {
                     isHoldTriggered = true;
-                    element.classList.remove('holding-active');
-
-                    if (window.Telegram?.WebApp?.HapticFeedback) {
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                    } else if (navigator.vibrate) {
-                        navigator.vibrate(50);
                     }
-
-                    openContextMenu(e, postId);
-                }, 1000);
-            };
-
-            const moveHold = (e) => {
-                if (!holdTimer) return;
-                const touch = e.touches ? e.touches[0] : e;
-                if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
-                    clearTimeout(holdTimer);
-                    holdTimer = null;
-                    element.classList.remove('holding-active');
-                }
+                    openContextMenuForPost(e, postId);
+                }, 1000); // Строго 1 секунда
             };
 
             const endHold = (e) => {
-                element.classList.remove('holding-active');
                 if (holdTimer) {
                     clearTimeout(holdTimer);
                     holdTimer = null;
 
-                    if (!isHoldTriggered && !e.target.closest('.carousel-nav-btn')) {
+                    if (!isHoldTriggered && !e.target.closest('.carousel-nav-btn') && !e.target.closest('.reaction-btn-pill')) {
                         toggleExpandPost(postId);
                     }
                 }
             };
 
             element.addEventListener('mousedown', startHold);
-            element.addEventListener('mousemove', moveHold);
             element.addEventListener('mouseup', endHold);
 
             element.addEventListener('touchstart', startHold, { passive: true });
-            element.addEventListener('touchmove', moveHold, { passive: true });
             element.addEventListener('touchend', endHold);
         }
 
@@ -960,7 +955,7 @@
             }
         }
 
-        function openContextMenu(event, postId) {
+        function openContextMenuForPost(event, postId) {
             currentPostId = postId;
 
             const modalOverlay = document.getElementById('postModal');
@@ -977,17 +972,36 @@
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
-            if (posX + 310 > windowWidth) posX = windowWidth - 320;
-            if (posX < 12) posX = 12;
-            if (posY + 330 > windowHeight) posY = windowHeight - 340;
-            if (posY < 12) posY = 12;
+            if (posX + 300 > windowWidth) posX = windowWidth - 310;
+            if (posX < 10) posX = 10;
+            if (posY + 260 > windowHeight) posY = windowHeight - 270;
+            if (posY < 10) posY = 10;
 
             modalContainer.style.top = `${posY}px`;
             modalContainer.style.left = `${posX}px`;
 
+            buildModalReactionsGrid();
             modalOverlay.classList.add('open');
             modalContainer.classList.add('open');
-            updateModalUI();
+        }
+
+        /* Генерация списка реакций В КОНТЕКСТНОМ МЕНЮ СТРОГО БЕЗ СЧЁТЧИКОВ */
+        function buildModalReactionsGrid() {
+            const grid = document.getElementById('reactionsGrid');
+            grid.innerHTML = '';
+
+            const emojis = ['🔥', '👍', '❤️', '😂', '😍', '😢', '😡', '👎'];
+            const post = postsData.find(p => p.id === currentPostId);
+
+            emojis.forEach(emoji => {
+                const isSelected = post && post.userChoice === emoji;
+                
+                const btn = document.createElement('button');
+                btn.className = `reaction-option${isSelected ? ' selected' : ''}`;
+                btn.onclick = () => selectReaction(emoji);
+                btn.innerHTML = getAppleEmojiHtml(emoji, 26);
+                grid.appendChild(btn);
+            });
         }
 
         function closeModal() {
@@ -999,53 +1013,13 @@
 
         function selectReaction(emoji) {
             if (!currentPostId) return;
-            const post = postsData.find(p => p.id === currentPostId);
-            if (!post) return;
-
-            if (!post.reactions) {
-                post.reactions = { '🔥':0, '👍':0, '❤️':0, '😂':0, '😍':0, '😢':0, '😡':0, '👎':0 };
-            }
-
-            if (post.userChoice === emoji) {
-                post.reactions[emoji]--;
-                post.userChoice = null;
-            } else {
-                if (post.userChoice) {
-                    post.reactions[post.userChoice]--;
-                }
-                post.reactions[emoji] = (post.reactions[emoji] || 0) + 1;
-                post.userChoice = emoji;
-            }
-
-            savePosts();
-            updateModalUI();
-            renderFeed();
-        }
-
-        function updateModalUI() {
-            if (!currentPostId) return;
-            const post = postsData.find(p => p.id === currentPostId);
-            if (!post) return;
-
-            const grid = document.getElementById('reactionsGrid');
-            const buttons = grid.children;
-            const emojis = ['🔥', '👍', '❤️', '😂', '😍', '😢', '😡', '👎'];
-
-            for (let i = 0; i < emojis.length; i++) {
-                const em = emojis[i];
-                const btn = buttons[i];
-                if (btn) {
-                    const countSpan = btn.querySelector('span');
-                    countSpan.textContent = post.reactions ? (post.reactions[em] || 0) : 0;
-                    if (post.userChoice === em) btn.classList.add('selected');
-                    else btn.classList.remove('selected');
-                }
-            }
+            toggleReaction(currentPostId, emoji);
+            buildModalReactionsGrid();
         }
 
         function openAdminModal() {
             document.getElementById('adminModal').classList.add('open');
-            document.getElementById('postModal').classList.remove('open');
+            closeModal();
         }
 
         function closeAdminModal() {
@@ -1082,14 +1056,13 @@
             showToast('Новость опубликована!');
         }
 
-        // Запись и скачивание новости в отдельный JSON файл для папки news/
         function downloadNewsJSON() {
             const title = document.getElementById('newPostTitle').value.trim();
             const content = document.getElementById('newPostContent').value.trim();
             const mediaRaw = document.getElementById('newPostMedia').value.trim();
 
             if (!title || !content) {
-                showToast('Сначала заполните поля новости!');
+                showToast('Заполните данные новости!');
                 return;
             }
 
@@ -1114,14 +1087,14 @@
             downloadAnchor.click();
             downloadAnchor.remove();
 
-            showToast(`JSON файл post_${timestamp}.json сохранен! Поместите его в папку news/`);
+            showToast(`JSON сохранен! Поместите его в /news/`);
         }
 
         function showToast(text) {
             const toast = document.getElementById('toastMessage');
             toast.textContent = text;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
         function copyPostLink() {
@@ -1134,7 +1107,7 @@
                 document.execCommand('copy');
                 showToast('Ссылка скопирована!');
             } catch (err) {
-                showToast('Не удалось скопировать');
+                showToast('Ошибка при копировании');
             }
             document.body.removeChild(textarea);
             closeModal();

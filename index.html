@@ -7,8 +7,10 @@
     
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Подключение шрифта Inter -->
+    <!-- Шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&subset=cyrillic,latin&display=swap" rel="stylesheet">
@@ -75,7 +77,6 @@
             color: inherit;
         }
 
-        /* Логотип строго картинка logo.jpg */
         .brand-logo-img {
             width: 48px;
             height: 48px;
@@ -115,9 +116,7 @@
             transition: opacity 0.2s ease;
         }
 
-        .tg-badge:active {
-            opacity: 0.8;
-        }
+        .tg-badge:active { opacity: 0.8; }
 
         .admin-banner {
             display: none;
@@ -131,9 +130,7 @@
             gap: 12px;
         }
 
-        .admin-banner.visible {
-            display: flex;
-        }
+        .admin-banner.visible { display: flex; }
 
         .admin-info-text {
             font-size: 13px;
@@ -167,9 +164,7 @@
             cursor: pointer;
         }
 
-        .post-card.active-card {
-            border-color: var(--accent-color);
-        }
+        .post-card.active-card { border-color: var(--accent-color); }
 
         .carousel-container {
             position: relative;
@@ -186,9 +181,7 @@
             width: 100%;
         }
 
-        .carousel-slide {
-            min-width: 100%;
-        }
+        .carousel-slide { min-width: 100%; }
 
         .carousel-slide img {
             width: 100%;
@@ -261,20 +254,14 @@
             letter-spacing: -0.2px;
         }
 
-        /* Разрешенная плавная анимация раскрытия поста */
         .post-text-wrapper {
             display: grid;
             grid-template-rows: 0fr;
             transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .post-card.expanded .post-text-wrapper {
-            grid-template-rows: 1fr;
-        }
-
-        .post-text-inner {
-            overflow: hidden;
-        }
+        .post-card.expanded .post-text-wrapper { grid-template-rows: 1fr; }
+        .post-text-inner { overflow: hidden; }
 
         .post-preview-text {
             display: -webkit-box;
@@ -286,9 +273,7 @@
             line-height: 1.55;
         }
 
-        .post-card.expanded .post-preview-text {
-            display: none;
-        }
+        .post-card.expanded .post-preview-text { display: none; }
 
         .post-full-text {
             font-size: 15px;
@@ -306,9 +291,7 @@
             cursor: pointer;
         }
 
-        .post-card.expanded .expand-hint {
-            display: none;
-        }
+        .post-card.expanded .expand-hint { display: none; }
 
         .active-reactions {
             display: flex;
@@ -352,21 +335,14 @@
 
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(15, 23, 42, 0.25);
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0; pointer-events: none;
             transition: opacity 0.25s ease;
             z-index: 10000;
         }
 
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
 
         .modal-container {
             position: fixed;
@@ -376,8 +352,7 @@
             width: min(300px, calc(100vw - 32px));
             padding: 16px;
             box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.12);
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0; pointer-events: none;
             transform: scale(0.92);
             transform-origin: top left;
             transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -386,174 +361,88 @@
 
         .modal-overlay.open .modal-container,
         .modal-container.open {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
+            opacity: 1; transform: scale(1); pointer-events: auto;
         }
 
         .modal-title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 13px; font-weight: 600; margin-bottom: 12px;
+            color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;
         }
 
         .close-modal {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-subtle);
-            line-height: 1;
+            background: none; border: none; font-size: 20px;
+            cursor: pointer; color: var(--text-subtle); line-height: 1;
         }
 
-        /* В контекстном меню ТОЛЬКО иконки смайлов без цифр */
+        /* Реакции в меню ТОЛЬКО иконки смайлов */
         .reactions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+            margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);
         }
 
         .reaction-option {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 10px 0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f8fafc; border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 10px 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .reaction-option.selected {
-            background: var(--accent-soft);
-            border-color: #60a5fa;
+            background: var(--accent-soft); border-color: #60a5fa;
         }
 
-        .modal-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .modal-actions { display: flex; flex-direction: column; gap: 6px; }
 
         .action-btn {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 10px 12px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-main);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-decoration: none;
+            background: #f8fafc; border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 10px 12px; font-family: inherit;
+            font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
         }
 
         .action-btn.primary {
-            background: var(--text-main);
-            color: #ffffff;
-            border-color: var(--text-main);
+            background: var(--text-main); color: #ffffff; border-color: var(--text-main);
         }
 
         .admin-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(480px, calc(100vw - 32px));
-            background: #ffffff;
-            border-radius: var(--radius-lg);
-            padding: 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            z-index: 10005;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: min(480px, calc(100vw - 32px)); background: #ffffff;
+            border-radius: var(--radius-lg); padding: 22px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); z-index: 10005;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
             border: 1px solid var(--border-color);
         }
 
-        .admin-modal.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .admin-modal.open { opacity: 1; pointer-events: auto; }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
-
+        .form-group { margin-bottom: 14px; }
         .form-group label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px;
         }
 
         .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); font-family: inherit; font-size: 14px; outline: none;
         }
 
-        textarea.form-control {
-            resize: vertical;
-            min-height: 90px;
-        }
+        textarea.form-control { resize: vertical; min-height: 90px; }
 
         .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0f172a;
-            color: #ffffff;
-            padding: 10px 22px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-            z-index: 20000;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: #0f172a; color: #ffffff; padding: 10px 22px; border-radius: 20px;
+            font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease; z-index: 20000;
         }
 
-        .toast.show {
-            opacity: 1;
-        }
-
+        .toast.show { opacity: 1; }
         footer {
-            text-align: center;
-            margin-top: 36px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            font-size: 12px;
-            color: var(--text-subtle);
+            text-align: center; margin-top: 36px; padding-top: 20px;
+            border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-subtle);
         }
-
         .empty-feed-notice {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--card-bg);
-            border: 1px dashed var(--border-color);
-            border-radius: var(--radius-lg);
-            color: var(--text-muted);
-            font-size: 14px;
+            text-align: center; padding: 40px 20px; background: var(--card-bg);
+            border: 1px dashed var(--border-color); border-radius: var(--radius-lg);
+            color: var(--text-muted); font-size: 14px;
         }
     </style>
 </head>
@@ -562,7 +451,6 @@
     <div class="wrapper">
         <header>
             <a href="#" class="brand">
-                <!-- Картинка логотипа logo.jpg -->
                 <img src="logo.jpg" alt="Голос Россонщины" class="brand-logo-img" onerror="this.onerror=null; this.src='https://placehold.co/80x80/2563eb/ffffff?text=ГР';">
                 <div class="brand-info">
                     <h1>Голос Россонщины</h1>
@@ -577,21 +465,14 @@
             </div>
         </header>
 
-        <!-- Только чистая центральная лента новостей (без правых панелей) -->
         <div class="main-content">
-            <!-- Панель Администратора -->
             <div class="admin-banner" id="adminBanner">
-                <div class="admin-info-text" id="adminBannerText">
-                    Режим редактора (ID: 5116019950)
-                </div>
-                <button class="btn-create-post" onclick="openAdminModal()">
-                    + Создать новость
-                </button>
+                <div class="admin-info-text">Режим редактора (ID: 5116019950)</div>
+                <button class="btn-create-post" onclick="openAdminModal()">+ Создать новость</button>
             </div>
 
-            <!-- Основная лента новостей -->
             <main class="feed" id="newsFeed">
-                <!-- Загружается из папки /news/ -->
+                <div class="empty-feed-notice">Загрузка свежих новостей из Supabase...</div>
             </main>
         </div>
 
@@ -600,74 +481,65 @@
         </footer>
     </div>
 
-    <!-- Контекстное меню (вылезает из левого верхнего угла) -->
+    <!-- Контекстное меню -->
     <div class="modal-overlay" id="postModal" onclick="closeModal()">
         <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
             <div class="modal-title">
                 <span>Выберите реакцию</span>
                 <button class="close-modal" onclick="closeModal()">×</button>
             </div>
-
-            <!-- Реакции БЕЗ счётчиков -->
-            <div class="reactions-grid" id="reactionsGrid">
-            </div>
-
+            <div class="reactions-grid" id="reactionsGrid"></div>
             <div class="modal-actions">
-                <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">
-                    Читать в Telegram
-                </a>
-                <button class="action-btn" onclick="copyPostLink()">
-                    Копировать ссылку
-                </button>
-                <button class="action-btn" onclick="sharePost()">
-                    Поделиться
-                </button>
+                <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">Читать в Telegram</a>
+                <button class="action-btn" onclick="copyPostLink()">Копировать ссылку</button>
+                <button class="action-btn" onclick="sharePost()">Поделиться</button>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно создания новости для админа -->
+    <!-- Модальное окно админа -->
     <div class="admin-modal" id="adminModal">
         <div class="modal-title">
-            <span>Новая публикация</span>
+            <span>Новая публикация (в Supabase)</span>
             <button class="close-modal" onclick="closeAdminModal()">×</button>
-        </div>
-        <div class="form-group">
-            <label>Заголовок новости</label>
-            <input type="text" id="newPostTitle" class="form-control" placeholder="Введите заголовок...">
         </div>
         <div class="form-group">
             <label>Текст новости</label>
             <textarea id="newPostContent" class="form-control" placeholder="Введите полный текст новости..."></textarea>
         </div>
         <div class="form-group">
-            <label>Ссылки на фото / logo.jpg (по одной в строке)</label>
-            <textarea id="newPostMedia" class="form-control" placeholder="logo.jpg" style="min-height: 50px;"></textarea>
+            <label>Ссылки на фото (по одной в строке) / logo.jpg</label>
+            <textarea id="newPostMedia" class="form-control" placeholder="https://..." style="min-height: 50px;"></textarea>
         </div>
         <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
             <button class="action-btn primary" onclick="publishPostFromModal()">Опубликовать на сайте</button>
-            <button class="action-btn" onclick="downloadNewsJSON()">Скачать JSON файл (в /news)</button>
         </div>
     </div>
 
     <div class="toast" id="toastMessage">Сообщение</div>
 
     <script>
+        // ВСТАВЬ СЮДА СВОИ КЛЮЧИ SUPABASE:
+        const SUPABASE_URL = "https://твой_проект.supabase.co";
+        const SUPABASE_ANON_KEY = "твой_anon_ключ";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const ADMIN_ID = 5116019950;
         let currentPostId = null;
+        let postsData = [];
+        let userVotes = JSON.parse(localStorage.getItem('user_votes_v2') || '{}');
 
-        /* Таблица оригинальных Apple iOS смайликов */
         const appleEmojiMap = {
             '🔥': '1f525',
             '👍': '1f44d',
             '❤️': '2764-fe0f',
+            '❤': '2764-fe0f',
             '😂': '1f602',
             '😍': '1f60d',
+            '🥰': '1f970',
             '😢': '1f622',
             '😡': '1f621',
-            '👎': '1f44e',
-            'ℹ️': '2139-fe0f',
-            '✉️': '2709-fe0f'
+            '👎': '1f44e'
         };
 
         function getAppleEmojiHtml(emojiChar, size = 20) {
@@ -679,66 +551,37 @@
             return emojiChar;
         }
 
-        // Чистые демо-новости со СТРОГО НУЛЕВЫМИ реакциями
-        const fallbackPosts = [
-            {
-                id: 1,
-                time: 'Сегодня, 15:40',
-                title: 'В Россонах начинается весеннее обновление центрального парка',
-                content: 'В Россонах завершилась подготовка к масштабному весеннему благоустройству парковой зоны. Местные жители и коммунальные службы активно поддержали инициативу субботника. Планируется высадить более трехсот деревьев, обновить скамейки, уложить новое тротуарное покрытие и оборудовать современную детскую площадку.',
-                media: ['logo.jpg'],
-                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
-                userChoice: null
-            },
-            {
-                id: 2,
-                time: 'Вчера, 18:10',
-                title: 'Обновленное расписание районных автобусных маршрутов',
-                content: 'Обновление расписания районного транспорта начнет действовать со следующей недели. Изменения коснутся утренних и вечерних рейсов для удобства жителей пригорода и школьников. Ознакомиться с подробным графиком по всем маршрутам можно на нашем портале.',
-                media: ['logo.jpg'],
-                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
-                userChoice: null
-            }
-        ];
-
-        let postsData = [];
-
         async function loadNewsFeed() {
-            let loadedPosts = [];
+            const { data: posts, error } = await supabase
+                .from('posts')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            // 1. Попытка загрузки из папки /news/ (manifest.json или отдельных постов)
-            try {
-                const manifestResp = await fetch('news/manifest.json');
-                if (manifestResp.ok) {
-                    const manifest = await manifestResp.json(); // Ожидаем массив имен файлов: ["post_1.json", "post_2.json"]
-                    const fetchPromises = manifest.map(filename => 
-                        fetch(`news/${filename}`)
-                            .then(res => res.ok ? res.json() : null)
-                            .catch(() => null)
-                    );
-                    const fetchedNews = await Promise.all(fetchPromises);
-                    loadedPosts = fetchedNews.filter(post => post !== null);
-                }
-            } catch (e) {
-                console.log("Локальный манифест /news/manifest.json не найден, загрузка из локального хранилища...");
+            if (error || !posts) {
+                console.error("Ошибка загрузки Supabase:", error);
+                document.getElementById('newsFeed').innerHTML = `<div class="empty-feed-notice">Ошибка подключения к базе данных Supabase</div>`;
+                return;
             }
 
-            // 2. Если в папке /news ничего нет или ошибка — загружаем из localStorage
-            if (loadedPosts.length === 0) {
-                try {
-                    const local = localStorage.getItem('rossony_news_feed_v6');
-                    if (local) {
-                        loadedPosts = JSON.parse(local);
-                    }
-                } catch(e) {}
-            }
+            postsData = posts.map(p => {
+                const text = p.text || "";
+                const firstLineIdx = text.indexOf('\n');
+                let title = firstLineIdx !== -1 ? text.substring(0, firstLineIdx).trim() : text;
+                let content = firstLineIdx !== -1 ? text.substring(firstLineIdx + 1).trim() : "";
 
-            // 3. Если и там пусто — берем базовые чистые новости
-            if (loadedPosts.length === 0) {
-                postsData = fallbackPosts;
-            } else {
-                postsData = loadedPosts.sort((a, b) => b.id - a.id);
-            }
+                const dateObj = new Date(p.created_at);
+                const formattedTime = dateObj.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) + `, ${dateObj.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+
+                return {
+                    id: p.id,
+                    time: formattedTime,
+                    title: title || "Публикация",
+                    content: content || title,
+                    media: Array.isArray(p.pictures) && p.pictures.length > 0 ? p.pictures : ['logo.jpg'],
+                    reactions: p.reactions || { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
+                    userChoice: userVotes[p.id] || null
+                };
+            });
 
             renderFeed();
         }
@@ -758,10 +601,6 @@
             loadNewsFeed();
         });
 
-        function savePosts() {
-            localStorage.setItem('rossony_news_feed_v6', JSON.stringify(postsData));
-        }
-
         function renderFeed() {
             const container = document.getElementById('newsFeed');
             container.innerHTML = '';
@@ -776,9 +615,8 @@
                 article.className = 'post-card';
                 article.id = `post-${post.id}`;
 
-                // Карусель медиа
                 let mediaHtml = '';
-                const images = Array.isArray(post.media) ? post.media : (post.media ? [post.media] : []);
+                const images = post.media;
                 
                 if (images.length > 0) {
                     let slidesHtml = '';
@@ -787,7 +625,7 @@
                     images.forEach((imgUrl, idx) => {
                         slidesHtml += `
                             <div class="carousel-slide">
-                                <img src="${imgUrl}" alt="Фото новости" loading="lazy" onerror="this.onerror=null; this.src='logo.jpg';">
+                                <img src="${imgUrl}" alt="Фото" loading="lazy" onerror="this.onerror=null; this.src='logo.jpg';">
                             </div>`;
                         if (images.length > 1) {
                             dotsHtml += `<div class="carousel-dot ${idx === 0 ? 'active' : ''}" id="dot-${post.id}-${idx}"></div>`;
@@ -816,11 +654,11 @@
                 article.innerHTML = `
                     ${mediaHtml}
                     <div class="post-time">${post.time}</div>
-                    <div class="post-title">${post.title}</div>
-                    <div class="post-preview-text">${post.content}</div>
+                    <div class="post-title">${escapeHtml(post.title)}</div>
+                    <div class="post-preview-text">${escapeHtml(post.content)}</div>
                     <div class="post-text-wrapper">
                         <div class="post-text-inner">
-                            <div class="post-full-text">${post.content}</div>
+                            <div class="post-full-text">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
                         </div>
                     </div>
                     <span class="expand-hint" onclick="event.stopPropagation(); toggleExpandPost(${post.id})">Читать полностью...</span>
@@ -838,7 +676,6 @@
             let html = '';
             if (post.reactions) {
                 for (const [emoji, count] of Object.entries(post.reactions)) {
-                    // Показывать ТОЛЬКО если есть хотя бы 1 голос пользователей
                     if (count > 0) {
                         const votedClass = post.userChoice === emoji ? ' user-voted' : '';
                         html += `
@@ -853,17 +690,7 @@
             return html;
         }
 
-        function updatePostReactionsUI(postId) {
-            const post = postsData.find(p => p.id === postId);
-            if (!post) return;
-
-            const reactionsContainer = document.getElementById(`reactions-${postId}`);
-            if (reactionsContainer) {
-                reactionsContainer.innerHTML = getReactionsBarHtml(post);
-            }
-        }
-
-        function toggleReaction(postId, emoji) {
+        async function toggleReaction(postId, emoji) {
             const post = postsData.find(p => p.id === postId);
             if (!post) return;
 
@@ -872,22 +699,28 @@
             }
 
             if (post.userChoice === emoji) {
-                post.reactions[emoji] = Math.max(0, post.reactions[emoji] - 1);
+                post.reactions[emoji] = Math.max(0, (post.reactions[emoji] || 0) - 1);
                 post.userChoice = null;
+                delete userVotes[postId];
             } else {
                 if (post.userChoice) {
-                    post.reactions[post.userChoice] = Math.max(0, post.reactions[post.userChoice] - 1);
+                    post.reactions[post.userChoice] = Math.max(0, (post.reactions[post.userChoice] || 0) - 1);
                 }
                 post.reactions[emoji] = (post.reactions[emoji] || 0) + 1;
                 post.userChoice = emoji;
+                userVotes[postId] = emoji;
             }
 
-            savePosts();
-            updatePostReactionsUI(postId);
+            localStorage.setItem('user_votes_v2', JSON.stringify(userVotes));
 
-            if (currentPostId === postId) {
-                buildModalReactionsGrid();
-            }
+            // Обновляем на клиенте
+            const reactionsContainer = document.getElementById(`reactions-${postId}`);
+            if (reactionsContainer) reactionsContainer.innerHTML = getReactionsBarHtml(post);
+
+            if (currentPostId === postId) buildModalReactionsGrid();
+
+            // Сохраняем в Supabase
+            await supabase.from('posts').update({ reactions: post.reactions }).eq('id', postId);
         }
 
         function moveCarousel(postId, direction) {
@@ -906,10 +739,7 @@
 
             for (let i = 0; i < total; i++) {
                 const dot = document.getElementById(`dot-${postId}-${i}`);
-                if (dot) {
-                    if (i === currentIndex) dot.classList.add('active');
-                    else dot.classList.remove('active');
-                }
+                if (dot) dot.classList.toggle('active', i === currentIndex);
             }
         }
 
@@ -923,11 +753,11 @@
                 isHoldTriggered = false;
                 holdTimer = setTimeout(() => {
                     isHoldTriggered = true;
-                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                    if (window.Telegram?.WebApp?.HapticFeedback) {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                     }
                     openContextMenuForPost(e, postId);
-                }, 1000); // Строго 1 секунда
+                }, 1000); // 1 секунда
             };
 
             const endHold = (e) => {
@@ -943,21 +773,17 @@
 
             element.addEventListener('mousedown', startHold);
             element.addEventListener('mouseup', endHold);
-
             element.addEventListener('touchstart', startHold, { passive: true });
             element.addEventListener('touchend', endHold);
         }
 
         function toggleExpandPost(postId) {
             const card = document.getElementById(`post-${postId}`);
-            if (card) {
-                card.classList.toggle('expanded');
-            }
+            if (card) card.classList.toggle('expanded');
         }
 
         function openContextMenuForPost(event, postId) {
             currentPostId = postId;
-
             const modalOverlay = document.getElementById('postModal');
             const modalContainer = document.getElementById('modalContainer');
 
@@ -969,12 +795,9 @@
             let posX = touch ? touch.clientX : window.innerWidth / 2;
             let posY = touch ? touch.clientY : window.innerHeight / 2;
 
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            if (posX + 300 > windowWidth) posX = windowWidth - 310;
+            if (posX + 300 > window.innerWidth) posX = window.innerWidth - 310;
             if (posX < 10) posX = 10;
-            if (posY + 260 > windowHeight) posY = windowHeight - 270;
+            if (posY + 260 > window.innerHeight) posY = window.innerHeight - 270;
             if (posY < 10) posY = 10;
 
             modalContainer.style.top = `${posY}px`;
@@ -985,17 +808,14 @@
             modalContainer.classList.add('open');
         }
 
-        /* Генерация списка реакций В КОНТЕКСТНОМ МЕНЮ СТРОГО БЕЗ СЧЁТЧИКОВ */
         function buildModalReactionsGrid() {
             const grid = document.getElementById('reactionsGrid');
             grid.innerHTML = '';
-
             const emojis = ['🔥', '👍', '❤️', '😂', '😍', '😢', '😡', '👎'];
             const post = postsData.find(p => p.id === currentPostId);
 
             emojis.forEach(emoji => {
                 const isSelected = post && post.userChoice === emoji;
-                
                 const btn = document.createElement('button');
                 btn.className = `reaction-option${isSelected ? ' selected' : ''}`;
                 btn.onclick = () => selectReaction(emoji);
@@ -1017,77 +837,31 @@
             buildModalReactionsGrid();
         }
 
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.add('open');
-            closeModal();
-        }
+        function openAdminModal() { document.getElementById('adminModal').classList.add('open'); closeModal(); }
+        function closeAdminModal() { document.getElementById('adminModal').classList.remove('open'); }
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.remove('open');
-        }
-
-        function publishPostFromModal() {
-            const title = document.getElementById('newPostTitle').value.trim();
+        async function publishPostFromModal() {
             const content = document.getElementById('newPostContent').value.trim();
             const mediaRaw = document.getElementById('newPostMedia').value.trim();
 
-            if (!title || !content) {
-                showToast('Заполните заголовок и текст!');
-                return;
+            if (!content) { showToast('Заполните текст новости!'); return; }
+            const mediaArray = mediaRaw ? mediaRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+            const defaultReactions = { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 };
+
+            const { error } = await supabase.from('posts').insert([{
+                text: content,
+                pictures: mediaArray,
+                reactions: defaultReactions
+            }]);
+
+            if (error) {
+                showToast('Ошибка публикации в Supabase');
+            } else {
+                showToast('Новость опубликована!');
+                closeAdminModal();
+                loadNewsFeed();
             }
-
-            const mediaArray = mediaRaw ? mediaRaw.split('\n').map(s => s.trim()).filter(Boolean) : ['logo.jpg'];
-
-            const newPost = {
-                id: Date.now(),
-                time: 'Только что',
-                title: title,
-                content: content,
-                media: mediaArray,
-                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
-                userChoice: null
-            };
-
-            postsData.unshift(newPost);
-            savePosts();
-            renderFeed();
-            closeAdminModal();
-
-            showToast('Новость опубликована!');
-        }
-
-        function downloadNewsJSON() {
-            const title = document.getElementById('newPostTitle').value.trim();
-            const content = document.getElementById('newPostContent').value.trim();
-            const mediaRaw = document.getElementById('newPostMedia').value.trim();
-
-            if (!title || !content) {
-                showToast('Заполните данные новости!');
-                return;
-            }
-
-            const mediaArray = mediaRaw ? mediaRaw.split('\n').map(s => s.trim()).filter(Boolean) : ['logo.jpg'];
-            const timestamp = Date.now();
-
-            const singleNewsObj = {
-                id: timestamp,
-                time: new Date().toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }),
-                title: title,
-                content: content,
-                media: mediaArray,
-                reactions: { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 },
-                userChoice: null
-            };
-
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(singleNewsObj, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `post_${timestamp}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-
-            showToast(`JSON сохранен! Поместите его в /news/`);
         }
 
         function showToast(text) {
@@ -1099,32 +873,22 @@
 
         function copyPostLink() {
             const dummyUrl = window.location.href.split('#')[0] + '#post-' + currentPostId;
-            const textarea = document.createElement('textarea');
-            textarea.value = dummyUrl;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showToast('Ссылка скопирована!');
-            } catch (err) {
-                showToast('Ошибка при копировании');
-            }
-            document.body.removeChild(textarea);
+            navigator.clipboard.writeText(dummyUrl).then(() => showToast('Ссылка скопирована!'));
             closeModal();
         }
 
         function sharePost() {
             const dummyUrl = window.location.href.split('#')[0] + '#post-' + currentPostId;
             if (navigator.share) {
-                navigator.share({
-                    title: 'Голос Россонщины',
-                    text: 'Читать новость в газете «Голос Россонщины»',
-                    url: dummyUrl
-                }).catch(() => {});
+                navigator.share({ title: 'Голос Россонщины', text: 'Читать новость', url: dummyUrl }).catch(() => {});
             } else {
                 copyPostLink();
             }
             closeModal();
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>

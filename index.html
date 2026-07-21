@@ -25,8 +25,6 @@
             --border-color: #e2e8f0;
             --accent-color: #2563eb;
             --accent-soft: #eff6ff;
-            --admin-gold: #d97706;
-            --admin-bg: #fffbeb;
             --radius-lg: 16px;
             --radius-md: 10px;
             --radius-sm: 6px;
@@ -117,37 +115,6 @@
         }
 
         .tg-badge:active { opacity: 0.8; }
-
-        .admin-banner {
-            display: none;
-            background: var(--admin-bg);
-            border: 1px solid #fef08a;
-            border-radius: var(--radius-md);
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .admin-banner.visible { display: flex; }
-
-        .admin-info-text {
-            font-size: 13px;
-            font-weight: 600;
-            color: #92400e;
-        }
-
-        .btn-create-post {
-            background: var(--admin-gold);
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
 
         .feed {
             display: flex;
@@ -374,7 +341,6 @@
             cursor: pointer; color: var(--text-subtle); line-height: 1;
         }
 
-        /* Реакции в меню ТОЛЬКО иконки смайлов */
         .reactions-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
             margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);
@@ -403,30 +369,6 @@
             background: var(--text-main); color: #ffffff; border-color: var(--text-main);
         }
 
-        .admin-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: min(480px, calc(100vw - 32px)); background: #ffffff;
-            border-radius: var(--radius-lg); padding: 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12); z-index: 10005;
-            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .admin-modal.open { opacity: 1; pointer-events: auto; }
-
-        .form-group { margin-bottom: 14px; }
-        .form-group label {
-            display: block; font-size: 11px; font-weight: 700; margin-bottom: 5px;
-            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px;
-        }
-
-        .form-control {
-            width: 100%; padding: 10px 12px; border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); font-family: inherit; font-size: 14px; outline: none;
-        }
-
-        textarea.form-control { resize: vertical; min-height: 90px; }
-
         .toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
             background: #0f172a; color: #ffffff; padding: 10px 22px; border-radius: 20px;
@@ -435,10 +377,12 @@
         }
 
         .toast.show { opacity: 1; }
+
         footer {
             text-align: center; margin-top: 36px; padding-top: 20px;
             border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-subtle);
         }
+
         .empty-feed-notice {
             text-align: center; padding: 40px 20px; background: var(--card-bg);
             border: 1px dashed var(--border-color); border-radius: var(--radius-lg);
@@ -466,11 +410,6 @@
         </header>
 
         <div class="main-content">
-            <div class="admin-banner" id="adminBanner">
-                <div class="admin-info-text">Режим редактора (ID: 5116019950)</div>
-                <button class="btn-create-post" onclick="openAdminModal()">+ Создать новость</button>
-            </div>
-
             <main class="feed" id="newsFeed">
                 <div class="empty-feed-notice">Загрузка свежих новостей...</div>
             </main>
@@ -481,7 +420,7 @@
         </footer>
     </div>
 
-    <!-- Контекстное меню -->
+    <!-- Контекстное меню реакций -->
     <div class="modal-overlay" id="postModal" onclick="closeModal()">
         <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
             <div class="modal-title">
@@ -497,49 +436,25 @@
         </div>
     </div>
 
-    <!-- Модальное окно админа -->
-    <div class="admin-modal" id="adminModal">
-        <div class="modal-title">
-            <span>Новая публикация (в Supabase)</span>
-            <button class="close-modal" onclick="closeAdminModal()">×</button>
-        </div>
-        <div class="form-group">
-            <label>Текст новости</label>
-            <textarea id="newPostContent" class="form-control" placeholder="Введите полный текст новости..."></textarea>
-        </div>
-        <div class="form-group">
-            <label>Ссылки на фото (по одной в строке) / logo.jpg</label>
-            <textarea id="newPostMedia" class="form-control" placeholder="https://..." style="min-height: 50px;"></textarea>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
-            <button class="action-btn primary" onclick="publishPostFromModal()">Опубликовать на сайте</button>
-        </div>
-    </div>
-
     <div class="toast" id="toastMessage">Сообщение</div>
 
     <script>
-        // ВСТАВЬ СЮДА СВОИ КЛЮЧИ SUPABASE:
+        // Инициализация Supabase
         const SUPABASE_URL = "https://kbsszmfhnkkzqzvoqqvm.supabase.co";
+        // gitleaks:allow
+        // gitguardian:ignore-next-line
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtic3N6bWZobmtrenF6dm9xcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NTUyNzUsImV4cCI6MjEwMDIzMTI3NX0.zkKBX_tqyjnUUiIecGXzHi_sgPxvYWwBrN-jyrM7haw";
+        
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const ADMIN_ID = 5116019950;
         let currentPostId = null;
         let postsData = [];
         let userVotes = JSON.parse(localStorage.getItem('user_votes_v2') || '{}');
 
         const appleEmojiMap = {
-            '🔥': '1f525',
-            '👍': '1f44d',
-            '❤️': '2764-fe0f',
-            '❤': '2764-fe0f',
-            '😂': '1f602',
-            '😍': '1f60d',
-            '🥰': '1f970',
-            '😢': '1f622',
-            '😡': '1f621',
-            '👎': '1f44e'
+            '🔥': '1f525', '👍': '1f44d', '❤️': '2764-fe0f', '❤': '2764-fe0f',
+            '😂': '1f602', '😍': '1f60d', '🥰': '1f970', '😢': '1f622',
+            '😡': '1f621', '👎': '1f44e'
         };
 
         function getAppleEmojiHtml(emojiChar, size = 20) {
@@ -559,7 +474,7 @@
 
             if (error || !posts) {
                 console.error("Ошибка загрузки Supabase:", error);
-                document.getElementById('newsFeed').innerHTML = `<div class="empty-feed-notice">Ошибка подключения к базе данных Supabase</div>`;
+                document.getElementById('newsFeed').innerHTML = `<div class="empty-feed-notice">Ошибка подключения к базе данных</div>`;
                 return;
             }
 
@@ -591,12 +506,6 @@
                 const tg = window.Telegram.WebApp;
                 tg.ready();
                 tg.expand();
-
-                const user = tg.initDataUnsafe?.user;
-                const urlParams = new URLSearchParams(window.location.search);
-                if ((user && user.id === ADMIN_ID) || urlParams.get('admin') === 'true') {
-                    document.getElementById('adminBanner').classList.add('visible');
-                }
             }
             loadNewsFeed();
         });
@@ -713,13 +622,11 @@
 
             localStorage.setItem('user_votes_v2', JSON.stringify(userVotes));
 
-            // Обновляем на клиенте
             const reactionsContainer = document.getElementById(`reactions-${postId}`);
             if (reactionsContainer) reactionsContainer.innerHTML = getReactionsBarHtml(post);
 
             if (currentPostId === postId) buildModalReactionsGrid();
 
-            // Сохраняем в Supabase
             await supabase.from('posts').update({ reactions: post.reactions }).eq('id', postId);
         }
 
@@ -757,7 +664,7 @@
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                     }
                     openContextMenuForPost(e, postId);
-                }, 1000); // 1 секунда
+                }, 1000);
             };
 
             const endHold = (e) => {
@@ -835,33 +742,6 @@
             if (!currentPostId) return;
             toggleReaction(currentPostId, emoji);
             buildModalReactionsGrid();
-        }
-
-        function openAdminModal() { document.getElementById('adminModal').classList.add('open'); closeModal(); }
-        function closeAdminModal() { document.getElementById('adminModal').classList.remove('open'); }
-
-        async function publishPostFromModal() {
-            const content = document.getElementById('newPostContent').value.trim();
-            const mediaRaw = document.getElementById('newPostMedia').value.trim();
-
-            if (!content) { showToast('Заполните текст новости!'); return; }
-            const mediaArray = mediaRaw ? mediaRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
-
-            const defaultReactions = { '🔥': 0, '👍': 0, '❤️': 0, '😂': 0, '😍': 0, '😢': 0, '😡': 0, '👎': 0 };
-
-            const { error } = await supabase.from('posts').insert([{
-                text: content,
-                pictures: mediaArray,
-                reactions: defaultReactions
-            }]);
-
-            if (error) {
-                showToast('Ошибка публикации в Supabase');
-            } else {
-                showToast('Новость опубликована!');
-                closeAdminModal();
-                loadNewsFeed();
-            }
         }
 
         function showToast(text) {

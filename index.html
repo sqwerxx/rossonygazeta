@@ -67,6 +67,42 @@
             border-radius: var(--radius-lg);
         }
 
+        /* Панель навигации в режиме одиночной новости */
+        .single-post-bar {
+            display: none;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        body.single-post-mode header {
+            display: none;
+        }
+
+        body.single-post-mode .single-post-bar {
+            display: flex;
+        }
+
+        .back-feed-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .back-feed-btn:active {
+            transform: scale(0.96);
+            background: var(--accent-soft);
+        }
+
         .brand {
             display: flex;
             align-items: center;
@@ -130,6 +166,10 @@
             position: relative;
         }
 
+        body.single-post-mode .post-card:not(.single-active-target) {
+            display: none !important;
+        }
+
         .post-card.active-card { border-color: var(--accent-color); }
 
         .carousel-container {
@@ -161,7 +201,6 @@
             display: block;
         }
 
-        /* Показ адаптивного блока видео */
         .video-slide-container {
             position: relative;
             cursor: pointer;
@@ -189,7 +228,8 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 14px rgba(0,0,0,0.3);
             pointer-events: none;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            z-index: 2;
         }
 
         .video-slide-container:active .video-play-badge {
@@ -207,7 +247,6 @@
             margin-left: 3px;
         }
 
-        /* Стрелочки навигации для ПК */
         .carousel-nav-btn {
             position: absolute;
             top: 50%;
@@ -233,7 +272,6 @@
         .carousel-nav-btn.prev { left: 12px; }
         .carousel-nav-btn.next { right: 12px; }
 
-        /* Появление стрелочек при наведении мышкой на ПК */
         @media (hover: hover) {
             .carousel-container:hover .carousel-nav-btn {
                 opacity: 1;
@@ -295,7 +333,11 @@
             transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .post-card.expanded .post-text-wrapper { grid-template-rows: 1fr; }
+        .post-card.expanded .post-text-wrapper,
+        body.single-post-mode .post-card .post-text-wrapper { 
+            grid-template-rows: 1fr; 
+        }
+
         .post-text-inner { overflow: hidden; }
 
         .post-preview-text {
@@ -308,7 +350,10 @@
             line-height: 1.55;
         }
 
-        .post-card.expanded .post-preview-text { display: none; }
+        .post-card.expanded .post-preview-text,
+        body.single-post-mode .post-card .post-preview-text { 
+            display: none; 
+        }
 
         .post-full-text {
             font-size: 15px;
@@ -326,7 +371,10 @@
             cursor: pointer;
         }
 
-        .post-card.expanded .expand-hint { display: none; }
+        .post-card.expanded .expand-hint,
+        body.single-post-mode .post-card .expand-hint { 
+            display: none; 
+        }
 
         .active-reactions {
             display: flex;
@@ -338,7 +386,7 @@
             border-top: 1px solid var(--border-color);
         }
 
-        .reaction-btn-pill {
+        .reaction-btn-pill, .share-action-pill {
             background: #f1f5f9;
             border: 1px solid var(--border-color);
             border-radius: 16px;
@@ -351,6 +399,12 @@
             color: var(--text-main);
             cursor: pointer;
             outline: none;
+            transition: background 0.15s ease;
+        }
+
+        .share-action-pill {
+            margin-left: auto;
+            background: #f8fafc;
         }
 
         .reaction-btn-pill.user-voted {
@@ -368,7 +422,7 @@
             pointer-events: none;
         }
 
-        /* Полноэкранный плеер для видео с плавной morph-анимацией */
+        /* Полноэкранный плеер для видео */
         .video-fullscreen-modal {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -411,9 +465,7 @@
             opacity: 1;
         }
 
-        .video-back-btn:active {
-            transform: scale(0.95);
-        }
+        .video-back-btn:active { transform: scale(0.95); }
 
         .video-fullscreen-player {
             position: absolute;
@@ -423,28 +475,32 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
+        /* Модальные окна */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.25);
+            background: rgba(15, 23, 42, 0.35);
+            backdrop-filter: blur(4px);
             opacity: 0; pointer-events: none;
             transition: opacity 0.25s ease;
             z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-overlay.open { opacity: 1; pointer-events: auto; }
 
         .modal-container {
-            position: fixed;
+            position: absolute;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            width: min(300px, calc(100vw - 32px));
-            padding: 16px;
-            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.12);
+            width: min(320px, calc(100vw - 32px));
+            padding: 18px;
+            box-shadow: 0 16px 36px -5px rgba(0, 0, 0, 0.16);
             opacity: 0; pointer-events: none;
             transform: scale(0.92);
-            transform-origin: top left;
             transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 10001;
         }
@@ -455,12 +511,12 @@
         }
 
         .modal-title {
-            font-size: 13px; font-weight: 600; margin-bottom: 12px;
-            color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; font-weight: 700; margin-bottom: 14px;
+            color: var(--text-main); display: flex; justify-content: space-between; align-items: center;
         }
 
         .close-modal {
-            background: none; border: none; font-size: 20px;
+            background: none; border: none; font-size: 22px;
             cursor: pointer; color: var(--text-subtle); line-height: 1;
         }
 
@@ -479,24 +535,57 @@
             background: var(--accent-soft); border-color: #60a5fa;
         }
 
-        .modal-actions { display: flex; flex-direction: column; gap: 6px; }
+        .modal-actions { display: flex; flex-direction: column; gap: 8px; }
 
         .action-btn {
             background: #f8fafc; border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); padding: 10px 12px; font-family: inherit;
-            font-size: 13px; font-weight: 600; color: var(--text-main); cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+            border-radius: var(--radius-md); padding: 11px 14px; font-family: inherit;
+            font-size: 13.5px; font-weight: 600; color: var(--text-main); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
         }
 
         .action-btn.primary {
             background: var(--text-main); color: #ffffff; border-color: var(--text-main);
         }
 
+        /* Грид мессенджеров для Шеринга */
+        .share-social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .social-share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 10px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+        }
+
+        .social-share-btn:active {
+            opacity: 0.88;
+            transform: scale(0.97);
+        }
+
+        .social-share-btn.tg { background: #229ED9; }
+        .social-share-btn.vk { background: #0077FF; }
+        .social-share-btn.viber { background: #7360F2; }
+        .social-share-btn.wa { background: #25D366; }
+
         .toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
             background: #0f172a; color: #ffffff; padding: 10px 22px; border-radius: 20px;
             font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none;
             transition: opacity 0.2s ease; z-index: 20000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         }
 
         .toast.show { opacity: 1; }
@@ -516,8 +605,9 @@
 <body>
 
     <div class="wrapper">
+        <!-- Шапка для общего вида -->
         <header>
-            <a href="#" class="brand">
+            <a href="#" class="brand" onclick="exitSinglePostView(); return false;">
                 <img src="logo.jpg" alt="Голос Россонщины" class="brand-logo-img" onerror="this.onerror=null; this.src='https://placehold.co/80x80/2563eb/ffffff?text=ГР';">
                 <div class="brand-info">
                     <h1>Голос Россонщины</h1>
@@ -531,6 +621,17 @@
                 </a>
             </div>
         </header>
+
+        <!-- Кнопка «Вернуться» при открытии конкретного поста по ссылке -->
+        <div class="single-post-bar" id="singlePostBar">
+            <button class="back-feed-btn" onclick="exitSinglePostView()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Вернуться к ленте</span>
+            </button>
+        </div>
 
         <div class="main-content">
             <main class="feed" id="newsFeed">
@@ -564,9 +665,42 @@
             </div>
             <div class="reactions-grid" id="reactionsGrid"></div>
             <div class="modal-actions">
-                <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary" id="commentBtn">Читать в Telegram</a>
-                <button class="action-btn" onclick="copyPostLink()">Копировать ссылку</button>
-                <button class="action-btn" onclick="sharePost()">Поделиться</button>
+                <a href="https://t.me/rossony_online" target="_blank" class="action-btn primary">Читать в Telegram</a>
+                <button class="action-btn" onclick="openShareModal(currentPostId)">Поделиться новостью</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно «Поделиться» (Мессенджеры и Соцсети) -->
+    <div class="modal-overlay" id="shareModalOverlay" onclick="closeShareModal()">
+        <div class="modal-container" style="position: relative;" onclick="event.stopPropagation()">
+            <div class="modal-title">
+                <span>Поделиться новостью</span>
+                <button class="close-modal" onclick="closeShareModal()">×</button>
+            </div>
+            
+            <div class="share-social-grid">
+                <a id="shareTgBtn" href="#" target="_blank" class="social-share-btn tg">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                    Telegram
+                </a>
+                <a id="shareVkBtn" href="#" target="_blank" class="social-share-btn vk">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.684 18c-6.035 0-9.487-4.145-9.63-11.038h3.033c.1 5.056 2.327 7.198 4.093 7.64V6.962h2.859v4.364c1.748-.188 3.582-2.17 4.2-4.364h2.858a8.6 8.6 0 0 1-3.87 5.503c1.472.7 3.583 2.87 4.28 5.535h-3.15c-.687-2.146-2.4-3.805-4.673-4.032V18h-.002z"/></svg>
+                    ВКонтакте
+                </a>
+                <a id="shareViberBtn" href="#" target="_blank" class="social-share-btn viber">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.7 15.3c-.6-.4-2.5-1.2-2.9-1.3-.4-.1-.7.1-.9.4-.3.4-.9 1.2-1.1 1.4-.2.2-.4.2-.8 0-.4-.2-1.7-.6-3.2-2-1.2-1.1-2-2.4-2.2-2.8-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.7.2-.2.2-.4.1-.7s-.9-2.2-1.3-3-.7-.7-1-.7h-.8c-.3 0-.9.1-1.3.6S3 7.1 3 9.3c0 2.2 1.6 4.3 1.8 4.6.2.3 3.1 4.8 7.6 6.7 1.1.5 1.9.8 2.6 1 .9.3 1.8.2 2.5.1.8-.1 2.5-1 2.8-2 .4-1 .4-1.9.3-2.1-.2-.2-.5-.3-1-.6z"/></svg>
+                    Viber
+                </a>
+                <a id="shareWaBtn" href="#" target="_blank" class="social-share-btn wa">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 1 .8-2.9-.2-.3A8 8 0 1 1 12 20zm4.5-5.9c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.5.1-.2.3-.7.8-.8 1-.1.1-.3.2-.5.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.6-1.5-1.8-.1-.3 0-.4.1-.5.1-.1.2-.3.3-.4.1-.1.2-.2.2-.4s0-.3-.1-.4c-.1-.1-.5-1.3-.7-1.8-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.5.1-.7.3-.3.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 1.9 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.5-.4z"/></svg>
+                    WhatsApp
+                </a>
+            </div>
+
+            <div class="modal-actions">
+                <button class="action-btn primary" onclick="copyCurrentPostLink()">📋 Скопировать ссылку</button>
+                <button class="action-btn" id="nativeShareBtn" onclick="triggerNativeShare()">📱 Другие приложения...</button>
             </div>
         </div>
     </div>
@@ -582,9 +716,11 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentPostId = null;
+        let activeSharePostId = null;
         let postsData = [];
         let userVotes = JSON.parse(localStorage.getItem('user_votes_v2') || '{}');
         let activeOriginVideoEl = null;
+        let videoObserver = null;
 
         const appleEmojiMap = {
             '🔥': '1f525', '👍': '1f44d', '❤️': '2764-fe0f', '❤': '2764-fe0f',
@@ -640,6 +776,7 @@
             });
 
             renderFeed();
+            checkUrlHash();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -649,6 +786,7 @@
                 tg.expand();
             }
             loadNewsFeed();
+            window.addEventListener('hashchange', checkUrlHash);
         });
 
         function renderFeed() {
@@ -674,9 +812,10 @@
 
                     mediaList.forEach((mediaUrl, idx) => {
                         if (isVideoUrl(mediaUrl)) {
+                            // Автоматическое зацикленное воспроизведение БЕЗ звука в карточке
                             slidesHtml += `
                                 <div class="carousel-slide video-slide-container" onclick="event.stopPropagation(); openFullscreenVideo(this, '${mediaUrl}')">
-                                    <video src="${mediaUrl}" preload="metadata" muted playsinline></video>
+                                    <video src="${mediaUrl}" autoplay loop muted playsinline preload="metadata" disablePictureInPicture></video>
                                     <div class="video-play-badge"></div>
                                 </div>`;
                         } else {
@@ -725,6 +864,9 @@
                     <span class="expand-hint" onclick="event.stopPropagation(); toggleExpandPost(${post.id})">Читать полностью...</span>
                     <div class="active-reactions" id="reactions-${post.id}">
                         ${getReactionsBarHtml(post)}
+                        <button class="share-action-pill" onclick="event.stopPropagation(); openShareModal(${post.id})">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        </button>
                     </div>
                 `;
 
@@ -735,16 +877,88 @@
                     attachCarouselSwipeEvents(post.id);
                 }
             });
+
+            // Запускаем наблюдатель для плавного управления воспроизведением видео при скролле
+            initVideoAutoplayObserver();
         }
 
-        /* Добавление поддержки нативных СВАЙПОВ для карусели */
+        /* Наблюдатель IntersectionObserver для умной автопаузы и автозапуска фонового видео */
+        function initVideoAutoplayObserver() {
+            if (videoObserver) {
+                videoObserver.disconnect();
+            }
+
+            videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        // Запускаем видео, когда оно видно в viewport
+                        const playPromise = video.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(() => {
+                                // Игнорируем блокировки автовоспроизведения браузера
+                            });
+                        }
+                    } else {
+                        // Ставим на паузу, когда видео ушло из видимости для сохранения батареи и CPU
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.35 });
+
+            document.querySelectorAll('.video-slide-container video').forEach(video => {
+                videoObserver.observe(video);
+            });
+        }
+
+        /* Прямые ссылки и режим отображения единичной новости */
+        function checkUrlHash() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#post-')) {
+                const targetId = parseInt(hash.replace('#post-', ''), 10);
+                if (!isNaN(targetId)) {
+                    openSinglePostView(targetId);
+                }
+            } else {
+                exitSinglePostView(false);
+            }
+        }
+
+        function openSinglePostView(postId) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+
+            document.body.classList.add('single-post-mode');
+            
+            document.querySelectorAll('.post-card').forEach(card => {
+                card.classList.remove('single-active-target', 'expanded');
+            });
+
+            const targetCard = document.getElementById(`post-${postId}`);
+            if (targetCard) {
+                targetCard.classList.add('single-active-target', 'expanded');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function exitSinglePostView(updateHash = true) {
+            document.body.classList.remove('single-post-mode');
+            document.querySelectorAll('.post-card').forEach(card => {
+                card.classList.remove('single-active-target');
+            });
+
+            if (updateHash && window.location.hash) {
+                history.pushState("", document.title, window.location.pathname + window.location.search);
+            }
+        }
+
+        /* Нативные свайпы в карусели */
         function attachCarouselSwipeEvents(postId) {
             setTimeout(() => {
                 const container = document.getElementById(`carousel-${postId}`);
                 if (!container) return;
 
-                let startX = 0;
-                let startY = 0;
+                let startX = 0, startY = 0;
                 let isHorizontalSwipe = false;
 
                 container.addEventListener('touchstart', (e) => {
@@ -756,7 +970,6 @@
                 container.addEventListener('touchmove', (e) => {
                     const diffX = e.touches[0].clientX - startX;
                     const diffY = e.touches[0].clientY - startY;
-
                     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
                         isHorizontalSwipe = true;
                     }
@@ -766,23 +979,19 @@
                     if (!isHorizontalSwipe) return;
                     const endX = e.changedTouches[0].clientX;
                     const diffX = endX - startX;
-
                     if (Math.abs(diffX) > 40) {
-                        if (diffX < 0) {
-                            moveCarousel(postId, 1);
-                        } else {
-                            moveCarousel(postId, -1);
-                        }
+                        moveCarousel(postId, diffX < 0 ? 1 : -1);
                     }
                 });
             }, 50);
         }
 
-        /* Управление полноэкранным видео с ПЛАВНОЙ MORPH АНИМАЦИЕЙ */
+        /* Управление полноэкранным видео по нажатию на кнопку Плей или карточку */
         function openFullscreenVideo(containerElement, videoUrl) {
             activeOriginVideoEl = containerElement;
             const modal = document.getElementById('videoFullscreenModal');
             const player = document.getElementById('fullscreenVideoPlayer');
+            const originVideo = containerElement.querySelector('video');
 
             const rect = containerElement.getBoundingClientRect();
 
@@ -794,22 +1003,23 @@
             player.style.borderRadius = 'var(--radius-md)';
 
             player.src = videoUrl;
+            player.muted = false; // Включаем звук в полноэкранном режиме
+
+            // Синхронизируем текущее время воспроизведения из превью
+            if (originVideo && originVideo.currentTime) {
+                player.currentTime = originVideo.currentTime;
+            }
+
             modal.style.display = 'flex';
 
             requestAnimationFrame(() => {
                 modal.classList.add('active');
-                
                 player.style.transition = 'all 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
-                
-                const windowWidth = window.innerWidth;
-                const windowHeight = window.innerHeight;
-                
                 player.style.top = '0px';
                 player.style.left = '0px';
-                player.style.width = `${windowWidth}px`;
-                player.style.height = `${windowHeight}px`;
+                player.style.width = `${window.innerWidth}px`;
+                player.style.height = `${window.innerHeight}px`;
                 player.style.borderRadius = '0px';
-
                 player.play().catch(() => {});
             });
         }
@@ -879,7 +1089,13 @@
             localStorage.setItem('user_votes_v2', JSON.stringify(userVotes));
 
             const reactionsContainer = document.getElementById(`reactions-${postId}`);
-            if (reactionsContainer) reactionsContainer.innerHTML = getReactionsBarHtml(post);
+            if (reactionsContainer) {
+                reactionsContainer.innerHTML = getReactionsBarHtml(post) + `
+                    <button class="share-action-pill" onclick="event.stopPropagation(); openShareModal(${post.id})">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                    </button>
+                `;
+            }
 
             if (currentPostId === postId) buildModalReactionsGrid();
 
@@ -907,15 +1123,12 @@
         }
 
         let holdTimer = null;
-        let isHoldTriggered = false;
 
         function attachTouchAndHoldEvents(element, postId) {
             const startHold = (e) => {
-                if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.expand-hint') || e.target.closest('.video-slide-container')) return;
+                if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.share-action-pill') || e.target.closest('.expand-hint') || e.target.closest('.video-slide-container')) return;
 
-                isHoldTriggered = false;
                 holdTimer = setTimeout(() => {
-                    isHoldTriggered = true;
                     if (window.Telegram?.WebApp?.HapticFeedback) {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                     }
@@ -955,7 +1168,7 @@
             let posX = touch ? touch.clientX : window.innerWidth / 2;
             let posY = touch ? touch.clientY : window.innerHeight / 2;
 
-            if (posX + 300 > window.innerWidth) posX = window.innerWidth - 310;
+            if (posX + 320 > window.innerWidth) posX = window.innerWidth - 330;
             if (posX < 10) posX = 10;
             if (posY + 260 > window.innerHeight) posY = window.innerHeight - 270;
             if (posY < 10) posY = 10;
@@ -997,27 +1210,62 @@
             buildModalReactionsGrid();
         }
 
+        /* Вызов модального окна Поделиться */
+        function openShareModal(postId) {
+            closeModal();
+            activeSharePostId = postId || currentPostId;
+            const post = postsData.find(p => p.id === activeSharePostId);
+            if (!post) return;
+
+            const postUrl = window.location.origin + window.location.pathname + '#post-' + activeSharePostId;
+            const titleText = post.title;
+
+            // Telegram
+            document.getElementById('shareTgBtn').href = `https://t.me/share/url?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(titleText)}`;
+            // VK
+            document.getElementById('shareVkBtn').href = `https://vk.com/share.php?url=${encodeURIComponent(postUrl)}&title=${encodeURIComponent(titleText)}`;
+            // Viber
+            document.getElementById('shareViberBtn').href = `viber://forward?text=${encodeURIComponent(titleText + '\n' + postUrl)}`;
+            // WhatsApp
+            document.getElementById('shareWaBtn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(titleText + '\n' + postUrl)}`;
+
+            const shareOverlay = document.getElementById('shareModalOverlay');
+            shareOverlay.classList.add('open');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModalOverlay').classList.remove('open');
+        }
+
+        function copyCurrentPostLink() {
+            if (!activeSharePostId) return;
+            const postUrl = window.location.origin + window.location.pathname + '#post-' + activeSharePostId;
+            navigator.clipboard.writeText(postUrl).then(() => showToast('Ссылка на новость скопирована!'));
+            closeShareModal();
+        }
+
+        function triggerNativeShare() {
+            if (!activeSharePostId) return;
+            const post = postsData.find(p => p.id === activeSharePostId);
+            const postUrl = window.location.origin + window.location.pathname + '#post-' + activeSharePostId;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: post ? post.title : 'Голос Россонщины',
+                    text: post ? post.title : 'Новость',
+                    url: postUrl
+                }).catch(() => {});
+            } else {
+                copyCurrentPostLink();
+            }
+            closeShareModal();
+        }
+
         function showToast(text) {
             const toast = document.getElementById('toastMessage');
             toast.textContent = text;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        function copyPostLink() {
-            const dummyUrl = window.location.href.split('#')[0] + '#post-' + currentPostId;
-            navigator.clipboard.writeText(dummyUrl).then(() => showToast('Ссылка скопирована!'));
-            closeModal();
-        }
-
-        function sharePost() {
-            const dummyUrl = window.location.href.split('#')[0] + '#post-' + currentPostId;
-            if (navigator.share) {
-                navigator.share({ title: 'Голос Россонщины', text: 'Читать новость', url: dummyUrl }).catch(() => {});
-            } else {
-                copyPostLink();
-            }
-            closeModal();
         }
 
         function escapeHtml(text) {

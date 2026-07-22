@@ -128,7 +128,6 @@
             border-radius: var(--radius-lg);
             padding: 22px;
             position: relative;
-            cursor: pointer;
         }
 
         .post-card.active-card { border-color: var(--accent-color); }
@@ -148,13 +147,63 @@
             width: 100%;
         }
 
-        .carousel-slide { min-width: 100%; }
+        .carousel-slide { 
+            min-width: 100%; 
+            position: relative;
+        }
 
-        .carousel-slide img {
+        .carousel-slide img,
+        .carousel-slide video {
             width: 100%;
             height: clamp(220px, 45vw, 380px);
             object-fit: cover;
             display: block;
+        }
+
+        /* Показ адаптивного блока видео */
+        .video-slide-container {
+            position: relative;
+            cursor: pointer;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-slide-container video {
+            object-fit: contain;
+        }
+
+        .video-play-badge {
+            position: absolute;
+            width: 52px;
+            height: 52px;
+            background: rgba(15, 23, 42, 0.75);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+
+        .video-slide-container:active .video-play-badge {
+            transform: scale(0.92);
+        }
+
+        .video-play-badge::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #ffffff;
+            margin-left: 3px;
         }
 
         .carousel-dots {
@@ -168,6 +217,7 @@
             padding: 4px 8px;
             border-radius: 12px;
             backdrop-filter: blur(4px);
+            z-index: 6;
         }
 
         .carousel-dot {
@@ -197,7 +247,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 5;
+            z-index: 7;
             font-size: 18px;
             color: var(--text-main);
         }
@@ -298,6 +348,52 @@
             display: inline-block;
             object-fit: contain;
             pointer-events: none;
+        }
+
+        /* Полноэкранный плеер для видео */
+        .video-fullscreen-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000000;
+            z-index: 30000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-fullscreen-modal.active {
+            display: flex;
+        }
+
+        .video-back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 30001;
+            background: rgba(15, 23, 42, 0.75);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: opacity 0.2s;
+        }
+
+        .video-back-btn:active {
+            opacity: 0.8;
+        }
+
+        .video-fullscreen-player {
+            width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
         }
 
         .modal-overlay {
@@ -420,6 +516,18 @@
         </footer>
     </div>
 
+    <!-- Оверлей Полноэкранного Видео -->
+    <div class="video-fullscreen-modal" id="videoFullscreenModal">
+        <button class="video-back-btn" onclick="closeFullscreenVideo()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Вернуться</span>
+        </button>
+        <video id="fullscreenVideoPlayer" class="video-fullscreen-player" controls playsinline></video>
+    </div>
+
     <!-- Контекстное меню реакций -->
     <div class="modal-overlay" id="postModal" onclick="closeModal()">
         <div class="modal-container" id="modalContainer" onclick="event.stopPropagation()">
@@ -445,7 +553,6 @@
         // gitguardian:ignore-next-line
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtic3N6bWZobmtrenF6dm9xcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NTUyNzUsImV4cCI6MjEwMDIzMTI3NX0.zkKBX_tqyjnUUiIecGXzHi_sgPxvYWwBrN-jyrM7haw";
         
-        // Переименовали в supabaseClient для избежания конфликтов
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentPostId = null;
@@ -465,6 +572,13 @@
                 return `<img src="${src}" class="apple-emoji" style="width:${size}px; height:${size}px;" alt="${emojiChar}" loading="lazy">`;
             }
             return emojiChar;
+        }
+
+        // Определение, является ли ссылка видеофайлом
+        function isVideoUrl(url) {
+            if (!url || typeof url !== 'string') return false;
+            const cleanUrl = url.split('?')[0].toLowerCase();
+            return cleanUrl.endsWith('.mp4') || cleanUrl.endsWith('.mov') || cleanUrl.endsWith('.webm') || cleanUrl.endsWith('.m4v') || cleanUrl.endsWith('.avi');
         }
 
         async function loadNewsFeed() {
@@ -526,24 +640,33 @@
                 article.id = `post-${post.id}`;
 
                 let mediaHtml = '';
-                const images = post.media;
+                const mediaList = post.media;
                 
-                if (images.length > 0) {
+                if (mediaList.length > 0) {
                     let slidesHtml = '';
                     let dotsHtml = '';
 
-                    images.forEach((imgUrl, idx) => {
-                        slidesHtml += `
-                            <div class="carousel-slide">
-                                <img src="${imgUrl}" alt="Фото" loading="lazy" onerror="this.onerror=null; this.src='logo.jpg';">
-                            </div>`;
-                        if (images.length > 1) {
+                    mediaList.forEach((mediaUrl, idx) => {
+                        if (isVideoUrl(mediaUrl)) {
+                            slidesHtml += `
+                                <div class="carousel-slide video-slide-container" onclick="event.stopPropagation(); openFullscreenVideo('${mediaUrl}')">
+                                    <video src="${mediaUrl}" preload="metadata" muted playsinline></video>
+                                    <div class="video-play-badge"></div>
+                                </div>`;
+                        } else {
+                            slidesHtml += `
+                                <div class="carousel-slide">
+                                    <img src="${mediaUrl}" alt="Медиа" loading="lazy" onerror="this.onerror=null; this.src='logo.jpg';">
+                                </div>`;
+                        }
+
+                        if (mediaList.length > 1) {
                             dotsHtml += `<div class="carousel-dot ${idx === 0 ? 'active' : ''}" id="dot-${post.id}-${idx}"></div>`;
                         }
                     });
 
                     let navBtns = '';
-                    if (images.length > 1) {
+                    if (mediaList.length > 1) {
                         navBtns = `
                             <button class="carousel-nav-btn prev" onclick="event.stopPropagation(); moveCarousel(${post.id}, -1)">‹</button>
                             <button class="carousel-nav-btn next" onclick="event.stopPropagation(); moveCarousel(${post.id}, 1)">›</button>
@@ -553,7 +676,7 @@
 
                     mediaHtml = `
                         <div class="carousel-container">
-                            <div class="carousel-track" id="track-${post.id}" data-index="0" data-total="${images.length}">
+                            <div class="carousel-track" id="track-${post.id}" data-index="0" data-total="${mediaList.length}">
                                 ${slidesHtml}
                             </div>
                             ${navBtns}
@@ -580,6 +703,23 @@
                 attachTouchAndHoldEvents(article, post.id);
                 container.appendChild(article);
             });
+        }
+
+        /* Управление полноэкранным видео */
+        function openFullscreenVideo(videoUrl) {
+            const modal = document.getElementById('videoFullscreenModal');
+            const player = document.getElementById('fullscreenVideoPlayer');
+            player.src = videoUrl;
+            modal.classList.add('active');
+            player.play().catch(() => {});
+        }
+
+        function closeFullscreenVideo() {
+            const modal = document.getElementById('videoFullscreenModal');
+            const player = document.getElementById('fullscreenVideoPlayer');
+            player.pause();
+            player.src = '';
+            modal.classList.remove('active');
         }
 
         function getReactionsBarHtml(post) {
@@ -656,7 +796,8 @@
 
         function attachTouchAndHoldEvents(element, postId) {
             const startHold = (e) => {
-                if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.expand-hint')) return;
+                // Игнорируем контекстное меню при кликах по интерактивным элементам
+                if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.expand-hint') || e.target.closest('.video-slide-container')) return;
 
                 isHoldTriggered = false;
                 holdTimer = setTimeout(() => {
@@ -668,19 +809,17 @@
                 }, 1000);
             };
 
-            const endHold = (e) => {
+            const endHold = () => {
                 if (holdTimer) {
                     clearTimeout(holdTimer);
                     holdTimer = null;
-
-                    if (!isHoldTriggered && !e.target.closest('.carousel-nav-btn') && !e.target.closest('.reaction-btn-pill')) {
-                        toggleExpandPost(postId);
-                    }
                 }
+                // Автоматическое раскрытие поста при обычном клике убрано!
             };
 
             element.addEventListener('mousedown', startHold);
             element.addEventListener('mouseup', endHold);
+            element.addEventListener('mouseleave', endHold);
             element.addEventListener('touchstart', startHold, { passive: true });
             element.addEventListener('touchend', endHold);
         }

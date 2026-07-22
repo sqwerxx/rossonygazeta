@@ -708,6 +708,10 @@
     <div class="toast" id="toastMessage">Сообщение</div>
 
     <script>
+        // ⚙️ НАСТРОЙКИ TELEGRAM MINI APP
+        const TG_BOT_USERNAME = "RossonyOnlineBot"; // Укажите юзернейм вашего бота (без @)
+        const TG_APP_NAME = "News";                  // Укажите Short Name вашей Mini App из BotFather
+
         // Инициализация Supabase
         const SUPABASE_URL = "https://kbsszmfhnkkzqzvoqqvm.supabase.co";
         // gitleaks:allow
@@ -892,15 +896,11 @@
                 entries.forEach(entry => {
                     const video = entry.target;
                     if (entry.isIntersecting) {
-                        // Запускаем видео, когда оно видно в viewport
                         const playPromise = video.play();
                         if (playPromise !== undefined) {
-                            playPromise.catch(() => {
-                                // Игнорируем блокировки автовоспроизведения браузера
-                            });
+                            playPromise.catch(() => {});
                         }
                     } else {
-                        // Ставим на паузу, когда видео ушло из видимости для сохранения батареи и CPU
                         video.pause();
                     }
                 });
@@ -911,17 +911,37 @@
             });
         }
 
-        /* Прямые ссылки и режим отображения единичной новости */
+        /* Умная роутинг-система: диплинки Telegram + обычный Hash браузера */
         function checkUrlHash() {
+            const tg = window.Telegram?.WebApp;
+            const startParam = tg?.initDataUnsafe?.start_param;
+
+            // 1. Проверяем, запущены ли мы через Telegram Mini App с диплинком (startapp=post_123)
+            if (startParam && startParam.startsWith('post_')) {
+                const targetId = parseInt(startParam.replace('post_', ''), 10);
+                if (!isNaN(targetId)) {
+                    openSinglePostView(targetId);
+                    return;
+                }
+            }
+
+            // 2. Проверяем обычный hash строки браузера (#post-123)
             const hash = window.location.hash;
             if (hash && hash.startsWith('#post-')) {
                 const targetId = parseInt(hash.replace('#post-', ''), 10);
                 if (!isNaN(targetId)) {
+                    // РЕДИРЕКТ: если сайт открыли по обычной веб-ссылке внутри браузера Telegram — отправляем в Mini App
+                    if (tg && tg.initData && !startParam) {
+                        window.location.href = `https://t.me/${TG_BOT_USERNAME}/${TG_APP_NAME}?startapp=post_${targetId}`;
+                        return;
+                    }
                     openSinglePostView(targetId);
+                    return;
                 }
-            } else {
-                exitSinglePostView(false);
             }
+
+            // В остальных случаях показываем всю ленту
+            exitSinglePostView(false);
         }
 
         function openSinglePostView(postId) {
@@ -986,7 +1006,7 @@
             }, 50);
         }
 
-        /* Управление полноэкранным видео по нажатию на кнопку Плей или карточку */
+        /* Управление полноэкранным видео */
         function openFullscreenVideo(containerElement, videoUrl) {
             activeOriginVideoEl = containerElement;
             const modal = document.getElementById('videoFullscreenModal');
@@ -1003,9 +1023,8 @@
             player.style.borderRadius = 'var(--radius-md)';
 
             player.src = videoUrl;
-            player.muted = false; // Включаем звук в полноэкранном режиме
+            player.muted = false;
 
-            // Синхронизируем текущее время воспроизведения из превью
             if (originVideo && originVideo.currentTime) {
                 player.currentTime = originVideo.currentTime;
             }
@@ -1210,24 +1229,28 @@
             buildModalReactionsGrid();
         }
 
-        /* Вызов модального окна Поделиться */
+        /* Вызов модального окна Поделиться (Гибридные ссылки) */
         function openShareModal(postId) {
             closeModal();
             activeSharePostId = postId || currentPostId;
             const post = postsData.find(p => p.id === activeSharePostId);
             if (!post) return;
 
-            const postUrl = window.location.origin + window.location.pathname + '#post-' + activeSharePostId;
             const titleText = post.title;
 
-            // Telegram
-            document.getElementById('shareTgBtn').href = `https://t.me/share/url?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(titleText)}`;
-            // VK
-            document.getElementById('shareVkBtn').href = `https://vk.com/share.php?url=${encodeURIComponent(postUrl)}&title=${encodeURIComponent(titleText)}`;
-            // Viber
-            document.getElementById('shareViberBtn').href = `viber://forward?text=${encodeURIComponent(titleText + '\n' + postUrl)}`;
-            // WhatsApp
-            document.getElementById('shareWaBtn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(titleText + '\n' + postUrl)}`;
+            // 🌐 Стандартная ссылка для сайтов и сторонних мессенджеров
+            const webUrl = window.location.origin + window.location.pathname + '#post-' + activeSharePostId;
+
+            // 🚀 Диплинк для Telegram Mini App
+            const tgMiniAppUrl = `https://t.me/${TG_BOT_USERNAME}/${TG_APP_NAME}?startapp=post_${activeSharePostId}`;
+
+            // Telegram — отправит ссылку, которая откроется прямо в Mini App
+            document.getElementById('shareTgBtn').href = `https://t.me/share/url?url=${encodeURIComponent(tgMiniAppUrl)}&text=${encodeURIComponent(titleText)}`;
+
+            // Остальные мессенджеры — отправят обычную веб-ссылку
+            document.getElementById('shareVkBtn').href = `https://vk.com/share.php?url=${encodeURIComponent(webUrl)}&title=${encodeURIComponent(titleText)}`;
+            document.getElementById('shareViberBtn').href = `viber://forward?text=${encodeURIComponent(titleText + '\n' + webUrl)}`;
+            document.getElementById('shareWaBtn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(titleText + '\n' + webUrl)}`;
 
             const shareOverlay = document.getElementById('shareModalOverlay');
             shareOverlay.classList.add('open');

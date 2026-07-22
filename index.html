@@ -139,11 +139,12 @@
             overflow: hidden;
             margin-bottom: 16px;
             background: #f1f5f9;
+            touch-action: pan-y;
         }
 
         .carousel-track {
             display: flex;
-            transition: transform 0.35s ease;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
         }
 
@@ -206,6 +207,43 @@
             margin-left: 3px;
         }
 
+        /* Стрелочки навигации для ПК */
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 7;
+            font-size: 20px;
+            color: var(--text-main);
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.2s ease, background 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            backdrop-filter: blur(4px);
+        }
+
+        .carousel-nav-btn.prev { left: 12px; }
+        .carousel-nav-btn.next { right: 12px; }
+
+        /* Появление стрелочек при наведении мышкой на ПК */
+        @media (hover: hover) {
+            .carousel-container:hover .carousel-nav-btn {
+                opacity: 1;
+            }
+            .carousel-nav-btn:hover {
+                background: #ffffff;
+                transform: translateY(-50%) scale(1.08);
+            }
+        }
+
         .carousel-dots {
             position: absolute;
             bottom: 12px;
@@ -218,6 +256,7 @@
             border-radius: 12px;
             backdrop-filter: blur(4px);
             z-index: 6;
+            pointer-events: none;
         }
 
         .carousel-dot {
@@ -225,7 +264,7 @@
             height: 6px;
             border-radius: 50%;
             background: #cbd5e1;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
 
         .carousel-dot.active {
@@ -233,27 +272,6 @@
             width: 14px;
             border-radius: 3px;
         }
-
-        .carousel-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 34px;
-            height: 34px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 7;
-            font-size: 18px;
-            color: var(--text-main);
-        }
-
-        .carousel-nav-btn.prev { left: 10px; }
-        .carousel-nav-btn.next { right: 10px; }
 
         .post-time {
             font-size: 12px;
@@ -350,19 +368,21 @@
             pointer-events: none;
         }
 
-        /* Полноэкранный плеер для видео */
+        /* Полноэкранный плеер для видео с плавной morph-анимацией */
         .video-fullscreen-modal {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000000;
+            background: rgba(0, 0, 0, 0);
             z-index: 30000;
             display: none;
             align-items: center;
             justify-content: center;
+            transition: background 0.35s ease;
         }
 
         .video-fullscreen-modal.active {
             display: flex;
+            background: rgba(0, 0, 0, 0.96);
         }
 
         .video-back-btn {
@@ -383,17 +403,24 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            transition: opacity 0.2s;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.2s ease;
+        }
+
+        .video-fullscreen-modal.active .video-back-btn {
+            opacity: 1;
         }
 
         .video-back-btn:active {
-            opacity: 0.8;
+            transform: scale(0.95);
         }
 
         .video-fullscreen-player {
-            width: 100%;
-            max-height: 100vh;
+            position: absolute;
             object-fit: contain;
+            transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
         .modal-overlay {
@@ -551,13 +578,13 @@
         const SUPABASE_URL = "https://kbsszmfhnkkzqzvoqqvm.supabase.co";
         // gitleaks:allow
         // gitguardian:ignore-next-line
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtic3N6bWZobmtrenF6dm9xcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NTUyNzUsImV4cCI6MjEwMDIzMTI3NX0.zkKBX_tqyjnUUiIecGXzHi_sgPxvYWwBrN-jyrM7haw";
-        
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtic3N6bWZobmtrenF6dm9xcXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2NTUyNzUsImV4cCI6MjEwMDIzMTI3NX0.zkKBX_tqyjnUUiIecGXzHi_sgPxvYWwBrN-jyrM7haw";        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentPostId = null;
         let postsData = [];
         let userVotes = JSON.parse(localStorage.getItem('user_votes_v2') || '{}');
+        let activeOriginVideoEl = null;
 
         const appleEmojiMap = {
             '🔥': '1f525', '👍': '1f44d', '❤️': '2764-fe0f', '❤': '2764-fe0f',
@@ -574,7 +601,6 @@
             return emojiChar;
         }
 
-        // Определение, является ли ссылка видеофайлом
         function isVideoUrl(url) {
             if (!url || typeof url !== 'string') return false;
             const cleanUrl = url.split('?')[0].toLowerCase();
@@ -649,7 +675,7 @@
                     mediaList.forEach((mediaUrl, idx) => {
                         if (isVideoUrl(mediaUrl)) {
                             slidesHtml += `
-                                <div class="carousel-slide video-slide-container" onclick="event.stopPropagation(); openFullscreenVideo('${mediaUrl}')">
+                                <div class="carousel-slide video-slide-container" onclick="event.stopPropagation(); openFullscreenVideo(this, '${mediaUrl}')">
                                     <video src="${mediaUrl}" preload="metadata" muted playsinline></video>
                                     <div class="video-play-badge"></div>
                                 </div>`;
@@ -665,21 +691,23 @@
                         }
                     });
 
+                    let dotsContainer = mediaList.length > 1 ? `<div class="carousel-dots">${dotsHtml}</div>` : '';
+                    
                     let navBtns = '';
                     if (mediaList.length > 1) {
                         navBtns = `
                             <button class="carousel-nav-btn prev" onclick="event.stopPropagation(); moveCarousel(${post.id}, -1)">‹</button>
                             <button class="carousel-nav-btn next" onclick="event.stopPropagation(); moveCarousel(${post.id}, 1)">›</button>
-                            <div class="carousel-dots">${dotsHtml}</div>
                         `;
                     }
 
                     mediaHtml = `
-                        <div class="carousel-container">
+                        <div class="carousel-container" id="carousel-${post.id}">
                             <div class="carousel-track" id="track-${post.id}" data-index="0" data-total="${mediaList.length}">
                                 ${slidesHtml}
                             </div>
                             ${navBtns}
+                            ${dotsContainer}
                         </div>
                     `;
                 }
@@ -702,24 +730,111 @@
 
                 attachTouchAndHoldEvents(article, post.id);
                 container.appendChild(article);
+
+                if (mediaList.length > 1) {
+                    attachCarouselSwipeEvents(post.id);
+                }
             });
         }
 
-        /* Управление полноэкранным видео */
-        function openFullscreenVideo(videoUrl) {
+        /* Добавление поддержки нативных СВАЙПОВ для карусели */
+        function attachCarouselSwipeEvents(postId) {
+            setTimeout(() => {
+                const container = document.getElementById(`carousel-${postId}`);
+                if (!container) return;
+
+                let startX = 0;
+                let startY = 0;
+                let isHorizontalSwipe = false;
+
+                container.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isHorizontalSwipe = false;
+                }, { passive: true });
+
+                container.addEventListener('touchmove', (e) => {
+                    const diffX = e.touches[0].clientX - startX;
+                    const diffY = e.touches[0].clientY - startY;
+
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                        isHorizontalSwipe = true;
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchend', (e) => {
+                    if (!isHorizontalSwipe) return;
+                    const endX = e.changedTouches[0].clientX;
+                    const diffX = endX - startX;
+
+                    if (Math.abs(diffX) > 40) {
+                        if (diffX < 0) {
+                            moveCarousel(postId, 1);
+                        } else {
+                            moveCarousel(postId, -1);
+                        }
+                    }
+                });
+            }, 50);
+        }
+
+        /* Управление полноэкранным видео с ПЛАВНОЙ MORPH АНИМАЦИЕЙ */
+        function openFullscreenVideo(containerElement, videoUrl) {
+            activeOriginVideoEl = containerElement;
             const modal = document.getElementById('videoFullscreenModal');
             const player = document.getElementById('fullscreenVideoPlayer');
+
+            const rect = containerElement.getBoundingClientRect();
+
+            player.style.transition = 'none';
+            player.style.top = `${rect.top}px`;
+            player.style.left = `${rect.left}px`;
+            player.style.width = `${rect.width}px`;
+            player.style.height = `${rect.height}px`;
+            player.style.borderRadius = 'var(--radius-md)';
+
             player.src = videoUrl;
-            modal.classList.add('active');
-            player.play().catch(() => {});
+            modal.style.display = 'flex';
+
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+                
+                player.style.transition = 'all 0.38s cubic-bezier(0.16, 1, 0.3, 1)';
+                
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                
+                player.style.top = '0px';
+                player.style.left = '0px';
+                player.style.width = `${windowWidth}px`;
+                player.style.height = `${windowHeight}px`;
+                player.style.borderRadius = '0px';
+
+                player.play().catch(() => {});
+            });
         }
 
         function closeFullscreenVideo() {
             const modal = document.getElementById('videoFullscreenModal');
             const player = document.getElementById('fullscreenVideoPlayer');
-            player.pause();
-            player.src = '';
+
+            if (activeOriginVideoEl) {
+                const rect = activeOriginVideoEl.getBoundingClientRect();
+                player.style.top = `${rect.top}px`;
+                player.style.left = `${rect.left}px`;
+                player.style.width = `${rect.width}px`;
+                player.style.height = `${rect.height}px`;
+                player.style.borderRadius = 'var(--radius-md)';
+            }
+
             modal.classList.remove('active');
+
+            setTimeout(() => {
+                player.pause();
+                player.src = '';
+                modal.style.display = 'none';
+                activeOriginVideoEl = null;
+            }, 380);
         }
 
         function getReactionsBarHtml(post) {
@@ -796,7 +911,6 @@
 
         function attachTouchAndHoldEvents(element, postId) {
             const startHold = (e) => {
-                // Игнорируем контекстное меню при кликах по интерактивным элементам
                 if (e.target.closest('.carousel-nav-btn') || e.target.closest('.reaction-btn-pill') || e.target.closest('.expand-hint') || e.target.closest('.video-slide-container')) return;
 
                 isHoldTriggered = false;
@@ -814,7 +928,6 @@
                     clearTimeout(holdTimer);
                     holdTimer = null;
                 }
-                // Автоматическое раскрытие поста при обычном клике убрано!
             };
 
             element.addEventListener('mousedown', startHold);
